@@ -1,100 +1,84 @@
 package src.jogodamemoria.controller;
 
-import java.util.Scanner;
-import java.util.ArrayList;
 import src.jogodamemoria.model.Carta;
 import src.jogodamemoria.model.Tabuleiro;
 import src.jogodamemoria.model.Jogador;
 
 public class GerenciadorJogo {
 
-    public void TentativaPares(Tabuleiro tabuleiro, int totalPares, ArrayList<Jogador> jogadores) {
-        Scanner sc = new Scanner(System.in);
-        int totalParesFormados = 0;
-        int indiceJogadorAtual = 0;
+    private Tabuleiro tabuleiro;
+    private Jogador jogador;
+    
+    private Carta primeiraCarta = null;
+    private Carta segundaCarta = null;
 
-        imprimirTabuleiro(tabuleiro);
+    private int totalParesObjetivo;
+    private int totalParesFormados = 0;
+    private int tentativas = 0;
 
-        while (totalParesFormados < totalPares) {
-            Jogador jogadorAtual = jogadores.get(indiceJogadorAtual);
+    public enum ResultadoJogada {
+        IGNORAR,
+        PRIMEIRA_CARTA_VIRADA,
+        ACERTOU_PAR,
+        ERROU_PAR,
+        VITORIA
+    }    
 
-            System.out.println("\n=== VEZ DE: " + jogadorAtual.getNome() + " ===");
+    public GerenciadorJogo(Tabuleiro tabuleiro, Jogador jogador) {
+        this.tabuleiro = tabuleiro;
+        this.jogador = jogador;
+        this.totalParesObjetivo = tabuleiro.getTamanho() / 2;
+    }
 
-            System.out
-                    .println("\nDigite a posicao da carta que deseja virar (0-" + (tabuleiro.getTamanho() - 1) + "):");
-            Carta carta1 = escolherCartaValida(sc, tabuleiro, null);
-            carta1.virar();
-            imprimirTabuleiro(tabuleiro);
+    public ResultadoJogada processarCliqueCarta(int indice) {
+        Carta cartaClicada = tabuleiro.getCarta(indice);
 
-            System.out.println("Digite outra posicao:");
-            Carta carta2 = escolherCartaValida(sc, tabuleiro, carta1);
-            carta2.virar();
-            imprimirTabuleiro(tabuleiro);
+        if (cartaClicada.isDescoberta() || cartaClicada.isVirada()) {
+            return ResultadoJogada.IGNORAR;
+        }
 
-            if (carta1.getId() == carta2.getId()) {
-                carta1.setDescoberta(true);
-                carta2.setDescoberta(true);
+        if (primeiraCarta == null) {
+            primeiraCarta = cartaClicada;
+            primeiraCarta.virar();
+            return ResultadoJogada.PRIMEIRA_CARTA_VIRADA;
+        }
+      
+        if (segundaCarta == null && cartaClicada != primeiraCarta) {
+            segundaCarta = cartaClicada;
+            segundaCarta.virar();
+            tentativas++;
+
+            if (primeiraCarta.getId() == segundaCarta.getId()) {
+                primeiraCarta.setDescoberta(true);
+                segundaCarta.setDescoberta(true);
+                jogador.ganharPonto();
                 totalParesFormados++;
-                System.out.println("Boa! Achou uma combinação!");
-                jogadorAtual.ganharPonto();
 
-            } else {
-                System.out.println("Você errou! As cartas vão voltar a se esconder.");
-                carta1.esconder();
-                carta2.esconder();
-                if (jogadores.size() > 1) {
-                    if (indiceJogadorAtual == 0) {
-                        indiceJogadorAtual++;
-                    } else {
-                        indiceJogadorAtual--;
-                    }
+                primeiraCarta = null;
+                segundaCarta = null;
+
+                if (totalParesFormados == totalParesObjetivo) {
+                    return ResultadoJogada.VITORIA;
                 }
-            }
-        }
+                return ResultadoJogada.ACERTOU_PAR;
 
-        System.out.println("\nParabéns! Você completou o jogo!");
-        sc.close();
-    }
-
-    private Carta escolherCartaValida(Scanner sc, Tabuleiro tabuleiro, Carta primeiraCartaEscolhida) {
-        while (true) {
-            int pos = sc.nextInt();
-
-            // Validação 1: Está dentro dos limites do tabuleiro?
-            if (pos < 0 || pos >= tabuleiro.getTamanho()) {
-                System.out
-                        .println("Posição inválida! Digite um número entre 0 e " + (tabuleiro.getTamanho() - 1) + ":");
-                continue;
-            }
-
-            Carta carta = tabuleiro.getCarta(pos);
-
-            // Validação 2: A carta já foi limpa/descoberta antes?
-            if (carta.isDescoberta()) {
-                System.out.println("Essa carta já foi descoberta! Escolha outra posição:");
-                continue;
-            }
-
-            // Validação 3: É a mesma posição da primeira carta da rodada?
-            if (primeiraCartaEscolhida != null && carta == primeiraCartaEscolhida) {
-                System.out.println("Você não pode escolher a mesma carta duas vezes! Escolha outra:");
-                continue;
-            }
-            return carta;
-        }
-    }
-
-    public static void imprimirTabuleiro(Tabuleiro tabuleiro) {
-        System.out.println();
-        for (int i = 0; i < tabuleiro.getTamanho(); i++) {
-            Carta carta = tabuleiro.getCarta(i);
-
-            if (carta.isVirada() || carta.isDescoberta()) {
-                System.out.print("[" + carta.getValor() + "] ");
             } else {
-                System.out.print("[  X  ] ");
+                primeiraCarta.esconder();
+                segundaCarta.esconder();
+
+                primeiraCarta = null;
+                segundaCarta = null;
+                return ResultadoJogada.ERROU_PAR;
             }
         }
-        System.out.println("\n");
+        return ResultadoJogada.IGNORAR;
+    }
+
+    public int getTentativas() {
+        return tentativas;
+    }
+
+    public int getTotalParesFormados() {
+        return totalParesFormados;
     }
 }

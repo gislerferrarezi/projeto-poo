@@ -32,7 +32,7 @@ public class JanelaMenu extends JFrame {
         btnSingle.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Tabuleiro tabuleiro = new Tabuleiro(4);
+                Tabuleiro tabuleiro = new Tabuleiro(6);
                 Jogador jogadorSolo = new Jogador("Jogador 1");
 
                 new JanelaSinglePlayer(tabuleiro, jogadorSolo);

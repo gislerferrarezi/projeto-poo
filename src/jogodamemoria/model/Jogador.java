@@ -13,6 +13,10 @@ public class Jogador {
     public void ganharPonto() {
         pontuacao++;
     }
+    
+    public void resetarPontos() {
+        pontuacao = 0;
+    }
 
     public String getNome() { return nome; }
     public int getPontuacao() { return pontuacao; }
