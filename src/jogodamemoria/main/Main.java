@@ -3,13 +3,15 @@ package src.jogodamemoria.main;
 import java.util.Scanner;
 import java.util.ArrayList;
 
-import src.jogodamemoria.controller.JogoController;
+import src.jogodamemoria.controller.GerenciadorJogo;
 import src.jogodamemoria.model.Tabuleiro;
 import src.jogodamemoria.view.JanelaMenu;
 import src.jogodamemoria.model.Jogador;
 
 public class Main {
     public static void main(String[] args) {
+
+        new JanelaMenu();
 
         Scanner sc = new Scanner(System.in);
         ArrayList<Jogador> jogadores = new ArrayList<>();
@@ -20,7 +22,7 @@ public class Main {
        
         int totalPares = 4;
         Tabuleiro tabuleiro = new Tabuleiro(totalPares);
-        JogoController controlador = new JogoController();      
+        GerenciadorJogo controlador = new GerenciadorJogo();      
         
         System.out.println("Quantidade de jogadores (1-2): ");
         int qtd_jogadores = sc.nextInt();

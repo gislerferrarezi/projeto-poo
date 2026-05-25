@@ -6,7 +6,7 @@ import src.jogodamemoria.model.Carta;
 import src.jogodamemoria.model.Tabuleiro;
 import src.jogodamemoria.model.Jogador;
 
-public class JogoController {
+public class GerenciadorJogo {
 
     public void TentativaPares(Tabuleiro tabuleiro, int totalPares, ArrayList<Jogador> jogadores) {
         Scanner sc = new Scanner(System.in);
