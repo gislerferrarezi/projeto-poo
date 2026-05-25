@@ -1,44 +1,53 @@
 package src.jogodamemoria.main;
 
+import java.util.Scanner;
+import java.util.ArrayList;
+
 import src.jogodamemoria.controller.JogoController;
-import src.jogodamemoria.model.Carta;
 import src.jogodamemoria.model.Tabuleiro;
+import src.jogodamemoria.view.JanelaMenu;
+import src.jogodamemoria.model.Jogador;
 
 public class Main {
-
     public static void main(String[] args) {
 
-        System.out.println("=== INICIALIZANDO O JOGO DA MEMÓRIA ===");
+        Scanner sc = new Scanner(System.in);
+        ArrayList<Jogador> jogadores = new ArrayList<>();
+
+        System.out.println("=========================================");
+        System.out.println("      BEM-VINDO AO JOGO DA MEMÓRIA       ");
+        System.out.println("=========================================");
        
-        Tabuleiro tabuleiro = new Tabuleiro(4);
+        int totalPares = 4;
+        Tabuleiro tabuleiro = new Tabuleiro(totalPares);
+        JogoController controlador = new JogoController();      
+        
+        System.out.println("Quantidade de jogadores (1-2): ");
+        int qtd_jogadores = sc.nextInt();
 
-        System.out.println("\n--- Estado Inicial das Cartas (Como o jogador vê): ---");
-        exibirTabuleiro(tabuleiro, false);
-
-        System.out.println("\n--- Gabarito (Cartas Embaralhadas por trás dos panos): ---");
-        exibirTabuleiro(tabuleiro, true);
-
-        JogoController controlador = new JogoController();
-
-        controlador.TentativaPares(tabuleiro, 4);        
-    }
-
-    private static void exibirTabuleiro(Tabuleiro tabuleiro, boolean mostrarGabarito) {
-        for (int i = 0; i < tabuleiro.getTamanho(); i++) {
-            Carta carta = tabuleiro.getCarta(i);
-
-            if (mostrarGabarito) {                
-                System.out.print("[" + carta.getValor() + " (ID:" + carta.getId() + ")] ");
-            } else {              
-                if (carta.isVirada()) {
-                    System.out.print("[" + carta.getValor() + "] ");
-                } else {
-                    System.out.print("[ X ] ");
-                }
-            }
+        while (qtd_jogadores != 1 && qtd_jogadores != 2) {
+            System.out.println("Quantidade inválida! Digite 1 ou 2: ");
+            qtd_jogadores = sc.nextInt();
         }
-        System.out.println(); 
-    }
 
-    
+        sc.nextLine(); 
+
+        if (qtd_jogadores == 1) {
+            System.out.println("Digite o nome do Jogador: ");
+            String nome = sc.nextLine();
+            jogadores.add(new Jogador(nome));
+        } else {
+            System.out.println("Digite o nome do Jogador 1: ");
+            String nome1 = sc.nextLine();
+            jogadores.add(new Jogador(nome1));
+            
+            System.out.println("Digite o nome do Jogador 2: ");
+            String nome2 = sc.nextLine();
+            jogadores.add(new Jogador(nome2));
+        }   
+               
+        controlador.TentativaPares(tabuleiro, totalPares, jogadores);
+        
+        sc.close();
+    }   
 }

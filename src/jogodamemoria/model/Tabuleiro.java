@@ -30,5 +30,5 @@ public class Tabuleiro {
   
     public int getTamanho() {
         return cartas.size();
-    }
+    }  
 }
