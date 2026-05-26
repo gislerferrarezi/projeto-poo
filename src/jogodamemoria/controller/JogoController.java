@@ -4,7 +4,7 @@ import src.jogodamemoria.model.Carta;
 import src.jogodamemoria.model.Tabuleiro;
 import src.jogodamemoria.model.Jogador;
 
-public class GerenciadorJogo {
+public class JogoController {
 
     private Tabuleiro tabuleiro;
     private Jogador jogador;
@@ -24,7 +24,7 @@ public class GerenciadorJogo {
         VITORIA
     }    
 
-    public GerenciadorJogo(Tabuleiro tabuleiro, Jogador jogador) {
+    public JogoController(Tabuleiro tabuleiro, Jogador jogador) {
         this.tabuleiro = tabuleiro;
         this.jogador = jogador;
         this.totalParesObjetivo = tabuleiro.getTamanho() / 2;

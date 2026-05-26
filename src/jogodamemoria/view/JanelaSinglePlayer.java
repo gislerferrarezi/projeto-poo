@@ -10,15 +10,17 @@ import java.util.ArrayList;
 import javax.swing.*;
 import src.jogodamemoria.model.Tabuleiro;
 import src.jogodamemoria.model.Jogador;
-import src.jogodamemoria.controller.GerenciadorJogo;
-import src.jogodamemoria.controller.GerenciadorJogo.ResultadoJogada;
+import src.jogodamemoria.controller.JogoController;
+import src.jogodamemoria.controller.JogoController.ResultadoJogada;
+import src.jogodamemoria.controller.NavegacaoController;
 
 public class JanelaSinglePlayer extends JFrame implements ActionListener {
 
     private Tabuleiro tabuleiro;
     private Jogador jogador;
 
-    private GerenciadorJogo gerenciador;
+    private NavegacaoController navegacaoController;
+    private JogoController gerenciador;
     private int indexPrimeiraCarta = -1;
 
     private JLabel lblPontos;
@@ -31,10 +33,11 @@ public class JanelaSinglePlayer extends JFrame implements ActionListener {
     private JPanel painelTabuleiro;
     ArrayList<JButton> botoesCartas = new ArrayList<>();
 
-    public JanelaSinglePlayer(Tabuleiro tabuleiro, Jogador jogador) {
+    public JanelaSinglePlayer(Tabuleiro tabuleiro, Jogador jogador, NavegacaoController navegacaoController) {
         this.tabuleiro = tabuleiro;
         this.jogador = jogador;
-        this.gerenciador = new GerenciadorJogo(tabuleiro, jogador);
+        this.navegacaoController = navegacaoController;
+        this.gerenciador = new JogoController(tabuleiro, jogador);
 
         setTitle("Jogo da Memória - Modo Solo");
         setSize(1280, 800);
@@ -118,9 +121,12 @@ public class JanelaSinglePlayer extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-    public void reiniciarJogo(Tabuleiro novoTabuleiro) {
-        this.tabuleiro = novoTabuleiro;
-        this.gerenciador = new GerenciadorJogo(novoTabuleiro, jogador);
+    public void reiniciarJogo() { 
+        this.tabuleiro = new Tabuleiro(this.tabuleiro.getTamanho() / 2);
+       
+        this.jogador.resetarPontos();
+       
+        this.gerenciador = new JogoController(this.tabuleiro, this.jogador);
         this.indexPrimeiraCarta = -1;
         this.tabuleiroBloqueado = false;
 
@@ -194,11 +200,10 @@ public class JanelaSinglePlayer extends JFrame implements ActionListener {
                     case VITORIA:
                         botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());
                         lblPontos.setText("Pares Feitos: " + jogador.getPontuacao());
-
                         cronometro.stop();
-                        JanelaVitoria popup = new JanelaVitoria(this, gerenciador.getTentativas(), lblTempo.getText(),
+
+                        navegacaoController.exibirVitoria(this, gerenciador.getTentativas(), lblTempo.getText(),
                                 jogador, tabuleiro);
-                        popup.setVisible(true);
                         break;
 
                     case IGNORAR:

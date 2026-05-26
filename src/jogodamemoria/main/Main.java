@@ -1,9 +1,14 @@
 package src.jogodamemoria.main;
 
-import src.jogodamemoria.view.JanelaMenu;
+import src.jogodamemoria.controller.NavegacaoController;
+import src.jogodamemoria.view.JanelaMenuPrincipal;
 
 public class Main {
     public static void main(String[] args) {
-        new JanelaMenu();       
+        JanelaMenuPrincipal menu = new JanelaMenuPrincipal();   
+
+        new NavegacaoController(menu);
+    
+        menu.setVisible(true);
     }   
 }
