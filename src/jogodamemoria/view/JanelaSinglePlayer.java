@@ -150,13 +150,7 @@ public class JanelaSinglePlayer extends JFrame implements ActionListener {
         painelTabuleiro.revalidate();
         painelTabuleiro.repaint();
 
-        cronometro.start();
-
-        System.out.println("--- GABARITO DO TABULEIRO ---");
-        for (int i = 0; i < tabuleiro.getTamanho(); i++) {
-            System.out.println("Botão " + i + ": " + tabuleiro.getCarta(i).getValor());
-        }
-        System.out.println("-----------------------------");
+        cronometro.start();        
     }
 
     @Override

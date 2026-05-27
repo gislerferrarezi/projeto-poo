@@ -9,8 +9,8 @@ public class JanelaMenuSinglePlayer extends JPanel {
     private JButton btnJogarPadrao;
     private JButton btnVoltar;
 
-    public JanelaMenuSinglePlayer() {       
-        setSize(1280, 800);       
+    public JanelaMenuSinglePlayer() {
+        setSize(1280, 800);
         setLayout(new BorderLayout());
 
         JLabel lblTitulo = new JLabel("MODO SOLO - SELECIONE A DIFICULDADE", JLabel.CENTER);
@@ -31,10 +31,10 @@ public class JanelaMenuSinglePlayer extends JPanel {
         lblTituloFacil.setFont(new Font("Arial", Font.BOLD, 18));
 
         JLabel lblDescricaoFacil = new JLabel(
-                "<html><center><body style='width: 180px; text-align: center; font-family: Arial; font-size: 12px; color: #555555;'>"
+                "<html><center>"
                         + "O objetivo é encontrar todos os pares o mais rápido possível, competindo contra o tempo e você mesmo.<br><br>"
-                        + "Traz uma dinâmica mais tranquila, contando com <b>6 pares</b> (12 cartas no total) e <b>tentativas ilimitadas</b>."
-                        + "</body></center></html>");
+                        + "Regras: Este nível conta com 6 pares (12 cartas no total), tentativas ilimitadas e sem limite de tempo."
+                        + "</center></html>");
 
         btnJogarFacil = new JButton("Jogar Modo Fácil");
         btnJogarFacil.setFont(new Font("Arial", Font.BOLD, 14));
@@ -54,10 +54,10 @@ public class JanelaMenuSinglePlayer extends JPanel {
         lblTituloPadrao.setFont(new Font("Arial", Font.BOLD, 18));
 
         JLabel lblDescricaoPadrao = new JLabel(
-                "<html><center><body style='width: 180px; text-align: center; font-family: Arial; font-size: 12px; color: #555555;'>"
+                "<html><center>"
                         + "As mesmas regras do modo fácil se aplicam aqui, porém com um desafio muito maior para a sua mente.<br><br>"
-                        + "São <b>12 pares</b> (24 cartas no total). Prepare-se para testar sua concentração ao máximo!"
-                        + "</body></center></html>");
+                        + "Regras: São 12 pares (24 cartas no total). Prepare-se para testar sua concentração ao máximo!"
+                        + "</center></html>");
 
         btnJogarPadrao = new JButton("Jogar Modo Padrão");
         btnJogarPadrao.setFont(new Font("Arial", Font.BOLD, 14));

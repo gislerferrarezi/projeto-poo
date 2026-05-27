@@ -34,9 +34,9 @@ public class JanelaVitoriaMultiplayer extends JDialog {
         // --- NORTE (Título dinâmico dependendo se teve ganhador ou empate) ---
         String textoTitulo;
         if (vencedor != null) {
-            textoTitulo = "🏆 " + vencedor.getNome().toUpperCase() + " VENCEU!";
+            textoTitulo = vencedor.getNome().toUpperCase() + " VENCEU!";
         } else {
-            textoTitulo = "🤝 DEU EMPATE!";
+            textoTitulo = "DEU EMPATE!";
         }
         
         JLabel lblTitulo = new JLabel(textoTitulo, JLabel.CENTER);

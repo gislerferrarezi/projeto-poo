@@ -57,8 +57,8 @@ public class NavegacaoController implements ActionListener {
         this.janelaMenuSinglePlayer.getBtnJogarPadrao().addActionListener(this);
 
         this.janelaMenuMultiplayer.getBtnVoltar().addActionListener(this);
-        this.janelaMenuMultiplayer.getBtnJogarFacil().addActionListener(this);
-        this.janelaMenuMultiplayer.getBtnJogarPadrao().addActionListener(this);
+        this.janelaMenuMultiplayer.getBtnJogar().addActionListener(this);
+      
 
         this.janelaCreditos.getBtnVoltar().addActionListener(this);
     }
@@ -135,13 +135,9 @@ public class NavegacaoController implements ActionListener {
             cardLayout.show(painelContentor, "MENU_PRINCIPAL");
             janelaMenuPrincipal.revalidate();
             janelaMenuPrincipal.repaint();
-        }
+        }      
 
-        else if (e.getSource() == janelaMenuMultiplayer.getBtnJogarFacil()) {
-            iniciarPartidaMultiplayer(6);
-        }
-
-        else if (e.getSource() == janelaMenuMultiplayer.getBtnJogarPadrao()) {
+        else if (e.getSource() == janelaMenuMultiplayer.getBtnJogar()) {
             iniciarPartidaMultiplayer(12);
         }
 
