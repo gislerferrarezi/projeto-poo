@@ -7,7 +7,6 @@ import javax.swing.*;
 import src.jogodamemoria.model.Jogador;
 import src.jogodamemoria.model.Tabuleiro;
 
-// Removemos o implements ActionListener
 public class JanelaVitoriaSingle extends JDialog {
 
     private JButton btnMenu;
@@ -46,8 +45,7 @@ public class JanelaVitoriaSingle extends JDialog {
         JPanel painelBotoes = new JPanel(new GridLayout(1, 2, 15, 0));
         btnMenu = new JButton("Voltar ao Menu");
         btnJogarNovamente = new JButton("Jogar Novamente");
-
-        // Quem vai dar o addActionListener agora é o Controller, de fora!
+        
         painelBotoes.add(btnMenu);
         painelBotoes.add(btnJogarNovamente);
         add(painelBotoes, BorderLayout.SOUTH);

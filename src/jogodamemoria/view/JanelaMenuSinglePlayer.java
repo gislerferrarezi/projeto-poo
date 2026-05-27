@@ -3,17 +3,14 @@ package src.jogodamemoria.view;
 import javax.swing.*;
 import java.awt.*;
 
-public class JanelaMenuSinglePlayer extends JFrame {
+public class JanelaMenuSinglePlayer extends JPanel {
 
     private JButton btnJogarFacil;
     private JButton btnJogarPadrao;
     private JButton btnVoltar;
 
-    public JanelaMenuSinglePlayer() {
-        setTitle("SELECIONE A DIFICULDADE");
-        setSize(1280, 800);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
+    public JanelaMenuSinglePlayer() {       
+        setSize(1280, 800);       
         setLayout(new BorderLayout());
 
         JLabel lblTitulo = new JLabel("MODO SOLO - SELECIONE A DIFICULDADE", JLabel.CENTER);
