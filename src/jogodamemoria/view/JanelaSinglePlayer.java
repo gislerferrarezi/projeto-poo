@@ -1,4 +1,4 @@
-package src.jogodamemoria.view;
+package jogodamemoria.view;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -8,10 +8,10 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.*;
-import src.jogodamemoria.model.Tabuleiro;
-import src.jogodamemoria.model.Jogador;
-import src.jogodamemoria.controller.GerenciadorJogo;
-import src.jogodamemoria.controller.GerenciadorJogo.ResultadoJogada;
+import jogodamemoria.model.Tabuleiro;
+import jogodamemoria.model.Jogador;
+import jogodamemoria.controller.GerenciadorJogo;
+import jogodamemoria.controller.GerenciadorJogo.ResultadoJogada;
 
 public class JanelaSinglePlayer extends JFrame implements ActionListener {
 
@@ -69,7 +69,9 @@ public class JanelaSinglePlayer extends JFrame implements ActionListener {
         painelTabuleiro = new JPanel(new GridLayout(lines, colunas, 15, 15));
 
         for (int i = 0; i < tabuleiro.getTamanho(); i++) {
-            JButton botao = new JButton("[ ? ]");
+            
+            ImageIcon verso = new ImageIcon("src/jogodamemoria/assets/verso_unesp.jpeg");//alteracao aq
+            JButton botao = new JButton(verso);//alteracao aq
             botao.setFont(new Font("Arial", Font.BOLD, 24));
 
             botoesCartas.add(botao);
@@ -133,7 +135,8 @@ public class JanelaSinglePlayer extends JFrame implements ActionListener {
         botoesCartas.clear();
 
         for (int i = 0; i < tabuleiro.getTamanho(); i++) {
-            JButton botao = new JButton("[ ? ]");
+            ImageIcon verso = new ImageIcon("src/jogodamemoria/assets/verso_unesp.jpeg");//alteracao aq
+            JButton botao = new JButton(verso);//alteracao aq
             botao.setFont(new Font("Arial", Font.BOLD, 24));
 
             botoesCartas.add(botao);

@@ -1,4 +1,4 @@
-package src.jogodamemoria.model;
+package jogodamemoria.model;
 
 public class Jogador {
     

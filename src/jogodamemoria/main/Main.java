@@ -1,9 +1,10 @@
-package src.jogodamemoria.main;
+package jogodamemoria.main;
 
-import src.jogodamemoria.view.JanelaMenu;
+import jogodamemoria.view.JanelaMenu;
 
 public class Main {
     public static void main(String[] args) {
-        new JanelaMenu();       
+        new JanelaMenu();     
+         System.out.println("FUNCIONOU");  
     }   
 }

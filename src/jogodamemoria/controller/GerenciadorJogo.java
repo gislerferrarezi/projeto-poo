@@ -1,8 +1,8 @@
-package src.jogodamemoria.controller;
+package jogodamemoria.controller;
 
-import src.jogodamemoria.model.Carta;
-import src.jogodamemoria.model.Tabuleiro;
-import src.jogodamemoria.model.Jogador;
+import jogodamemoria.model.Carta;
+import jogodamemoria.model.Tabuleiro;
+import jogodamemoria.model.Jogador;
 
 public class GerenciadorJogo {
 

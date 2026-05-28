@@ -1,9 +1,9 @@
-package src.jogodamemoria.view;
+package jogodamemoria.view;
 
 import javax.swing.*;
 
-import src.jogodamemoria.model.Jogador;
-import src.jogodamemoria.model.Tabuleiro;
+import jogodamemoria.model.Jogador;
+import jogodamemoria.model.Tabuleiro;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
