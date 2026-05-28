@@ -197,7 +197,7 @@ public class NavegacaoController implements ActionListener {
                 jogoAntigo.dispose();
 
                 // Recria a partida
-                Tabuleiro novoTabuleiro = new Tabuleiro(totalPares);
+                Tabuleiro novoTabuleiro = new Tabuleiro(totalPares, true);
                 Jogador j1 = new Jogador(nome1);
                 Jogador j2 = new Jogador(nome2);
 
@@ -217,7 +217,7 @@ public class NavegacaoController implements ActionListener {
                 JOptionPane.QUESTION_MESSAGE);
 
         if (nome != null && !nome.trim().isEmpty()) {
-            Tabuleiro tabuleiro = new Tabuleiro(totalPares);
+            Tabuleiro tabuleiro = new Tabuleiro(totalPares, false);
             Jogador jogador = new Jogador(nome);
 
             JanelaSinglePlayer jogo = new JanelaSinglePlayer(tabuleiro, jogador, this);
@@ -241,7 +241,7 @@ public class NavegacaoController implements ActionListener {
                     JOptionPane.QUESTION_MESSAGE);
 
             if (nome2 != null && !nome2.trim().isEmpty()) {
-                Tabuleiro tabuleiro = new Tabuleiro(totalPares);
+                Tabuleiro tabuleiro = new Tabuleiro(totalPares, true);
                 Jogador j1 = new Jogador(nome1);
                 Jogador j2 = new Jogador(nome2);
 

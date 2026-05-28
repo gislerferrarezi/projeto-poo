@@ -16,7 +16,7 @@ import src.jogodamemoria.controller.NavegacaoController;
 
 public class JanelaSinglePlayer extends JFrame implements ActionListener {
 
-    private Tabuleiro tabuleiro;
+    private Tabuleiro tabuleiro;   
     private Jogador jogador;
 
     private NavegacaoController navegacaoController;
@@ -111,18 +111,10 @@ public class JanelaSinglePlayer extends JFrame implements ActionListener {
         });
 
         cronometro.start();
-
-        System.out.println("--- GABARITO DO TABULEIRO ---");
-        for (int i = 0; i < tabuleiro.getTamanho(); i++) {
-            System.out.println("Botão " + i + ": " + tabuleiro.getCarta(i).getValor());
-        }
-        System.out.println("-----------------------------");
-
-        setVisible(true);
     }
 
     public void reiniciarJogo() { 
-        this.tabuleiro = new Tabuleiro(this.tabuleiro.getTamanho() / 2);
+        this.tabuleiro = new Tabuleiro(this.tabuleiro.getTamanho() / 2, false);
        
         this.jogador.resetarPontos();
        
@@ -146,7 +138,6 @@ public class JanelaSinglePlayer extends JFrame implements ActionListener {
             painelTabuleiro.add(botao);
             botao.addActionListener(this);
         }
-
         painelTabuleiro.revalidate();
         painelTabuleiro.repaint();
 
