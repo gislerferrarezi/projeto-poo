@@ -4,7 +4,7 @@ import src.jogodamemoria.model.Carta;
 import src.jogodamemoria.model.Tabuleiro;
 import src.jogodamemoria.model.Carta.Tipo_Carta;
 import src.jogodamemoria.model.Jogador;
-import javax.swing.Timer; 
+import javax.swing.Timer;
 
 public class JogoController {
 
@@ -23,9 +23,10 @@ public class JogoController {
 
     // --- VARIÁVEIS DO CRONÔMETRO E BÔNUS ---
     private Timer cronometro;
-    private int tempoRestante = 30;
-    private boolean jogadorGanhouBonusTurno = false; 
-    private Runnable onTickCallback;    // Permite que a View atualize o texto do contador de segundos
+    private int tempoRestanteJ1 = 30;
+    private int tempoRestanteJ2 = 30;
+    private boolean jogadorGanhouBonusTurno = false;
+    private Runnable onTickCallback; // Permite que a View atualize o texto do contador de segundos
     private Runnable onTimeoutCallback; // Permite que a View atualize a tela quando o tempo esgotar
 
     public enum ResultadoJogada {
@@ -48,27 +49,27 @@ public class JogoController {
     public JogoController(Tabuleiro tabuleiro, Jogador jogador1, Jogador jogador2) {
         this.tabuleiro = tabuleiro;
         this.jogador1 = jogador1;
-        this.jogador2 = jogador2;        
+        this.jogador2 = jogador2;
         this.totalParesObjetivo = tabuleiro.getTamanho() / 2;
-        inicializarCronometro(); 
+        inicializarCronometro();
     }
 
     // --- LÓGICA PRINCIPAL DO CLIQUE DA CARTA ---
     public ResultadoJogada processarCliqueCarta(int indice) {
-        Carta cartaClicada = tabuleiro.getCarta(indice);      
-        
+        Carta cartaClicada = tabuleiro.getCarta(indice);
+
         if (cartaClicada.isDescoberta() || cartaClicada.isVirada()) {
             return ResultadoJogada.IGNORAR;
         }
-        
+
         if (cartaClicada.getTipo() == Tipo_Carta.PERDEU_A_VEZ) {
-            cartaClicada.virar();            
-            
+            cartaClicada.virar();
+
             if (primeiraCarta != null) {
                 primeiraCarta.esconder();
                 primeiraCarta = null;
             }
-            
+
             alternarTurnoPorPunicao();
             return ResultadoJogada.PERDEU_A_VEZ;
         }
@@ -85,30 +86,33 @@ public class JogoController {
             segundaCarta = cartaClicada;
             segundaCarta.virar();
             tentativas++;
-          
+
             pararCronometro();
-            
+
             if (primeiraCarta.getId() == segundaCarta.getId()) {
                 primeiraCarta.setDescoberta(true);
                 segundaCarta.setDescoberta(true);
-                
+
                 int pontosDaJogada = 1;
                 if (primeiraCarta.getTipo() == Tipo_Carta.DOBRO_PONTOS) {
-                    pontosDaJogada = 2; 
+                    pontosDaJogada = 2;
                 }
-                
+
                 if (jogador1 != null) {
                     if (jogadorAtual == 0) {
-                        for (int k = 0; k < pontosDaJogada; k++) jogador1.ganharPonto();
+                        for (int k = 0; k < pontosDaJogada; k++)
+                            jogador1.ganharPonto();
                     } else {
-                        for (int k = 0; k < pontosDaJogada; k++) jogador2.ganharPonto();
+                        for (int k = 0; k < pontosDaJogada; k++)
+                            jogador2.ganharPonto();
                     }
                 } else {
-                    for (int k = 0; k < pontosDaJogada; k++) jogador.ganharPonto(); 
-                }                
-                
+                    for (int k = 0; k < pontosDaJogada; k++)
+                        jogador.ganharPonto();
+                }
+
                 totalParesFormados++;
-              
+
                 if (primeiraCarta.getTipo() == Tipo_Carta.JOGUE_DE_NOVO) {
                     jogadorGanhouBonusTurno = true;
                 }
@@ -118,18 +122,17 @@ public class JogoController {
 
                 if (totalParesFormados == totalParesObjetivo) {
                     return ResultadoJogada.VITORIA;
-                }               
-          
-                resetarCronometro();
+                }
+
                 return ResultadoJogada.ACERTOU_PAR;
 
-            } else {                
+            } else {
                 primeiraCarta.esconder();
                 segundaCarta.esconder();
-                
-                if (jogador1 != null) {                  
+
+                if (jogador1 != null) {
                     if (jogadorGanhouBonusTurno) {
-                        jogadorGanhouBonusTurno = false; 
+                        jogadorGanhouBonusTurno = false;
                     } else {
                         // Passa o turno normalmente
                         if (jogadorAtual == 0) {
@@ -142,8 +145,7 @@ public class JogoController {
 
                 primeiraCarta = null;
                 segundaCarta = null;
-               
-                resetarCronometro();
+
                 return ResultadoJogada.ERROU_PAR;
             }
         }
@@ -153,21 +155,29 @@ public class JogoController {
     // --- MÉTODOS INTERNOS DO CRONÔMETRO (SWING TIMER) ---
     private void inicializarCronometro() {
         cronometro = new Timer(1000, e -> {
-            tempoRestante--;            
-        
-            if (onTickCallback != null) {
-                onTickCallback.run();
+            if (jogadorAtual == 0) {
+                tempoRestanteJ1--;
+                if (tempoRestanteJ1 <= 0) {
+                    cronometro.stop();
+                    lidarTempoEsgotado();
+                    return;
+                }
+            } else {
+                tempoRestanteJ2--;
+                if (tempoRestanteJ2 <= 0) {
+                    cronometro.stop();
+                    lidarTempoEsgotado();
+                    return;
+                }
             }
 
-            // O tempo esgotou!
-            if (tempoRestante <= 0) {
-                cronometro.stop();
-                lidarTempoEsgotado();
+            if (onTickCallback != null) {
+                onTickCallback.run();
             }
         });
     }
 
-    private void lidarTempoEsgotado() {     
+    private void lidarTempoEsgotado() {
         if (primeiraCarta != null) {
             primeiraCarta.esconder();
             primeiraCarta = null;
@@ -177,13 +187,13 @@ public class JogoController {
             segundaCarta = null;
         }
 
-        if (jogadorAtual == 0) {
-            jogadorAtual = 1;
-        } else {
-            jogadorAtual = 0;
-        }
-        
-        resetarCronometro();
+        // Alterna o jogador
+        jogadorAtual = (jogadorAtual == 0) ? 1 : 0;
+
+        // Reseta os dois relógios internos para 30
+        tempoRestanteJ1 = 30;
+        tempoRestanteJ2 = 30;
+
         if (onTimeoutCallback != null) {
             onTimeoutCallback.run();
         }
@@ -196,41 +206,60 @@ public class JogoController {
             } else {
                 jogadorAtual = 0;
             }
-            resetarCronometro();
         }
     }
-    
+
     public void iniciarCronometro() {
-        if (cronometro != null) cronometro.start();
+        if (cronometro != null)
+            cronometro.start();
     }
 
     public void pararCronometro() {
-        if (cronometro != null) cronometro.stop();
+        if (cronometro != null)
+            cronometro.stop();
     }
 
     public void resetarCronometro() {
         if (cronometro != null) {
             cronometro.stop();
-            tempoRestante = 30;
+            tempoRestanteJ1 = 30;
+            tempoRestanteJ2 = 30;
+
+            if (onTickCallback != null) {
+                onTickCallback.run(); 
+            }
             cronometro.start();
         }
     }
-
-    public int getTempoRestante() {
-        return tempoRestante;
-    }
-    
+   
     public void configurarCallbacksCronometro(Runnable onTick, Runnable onTimeout) {
         this.onTickCallback = onTick;
         this.onTimeoutCallback = onTimeout;
     }
 
     // --- GETTERS, SETTERS E COMPARADORES ---
-    public int getTentativas() { return tentativas; }
-    public int getTotalParesFormados() { return totalParesFormados; }
-    public int getJogadorAtual() { return jogadorAtual; }
-    public Jogador getJogador1() { return jogador1; }
-    public Jogador getJogador2() { return jogador2; }
+    public int getTentativas() {
+        return tentativas;
+    }
+
+    public int getTotalParesFormados() {
+        return totalParesFormados;
+    }
+
+    public int getJogadorAtual() {
+        return jogadorAtual;
+    }
+
+    public Jogador getJogador1() {
+        return jogador1;
+    }
+
+    public Jogador getJogador2() {
+        return jogador2;
+    }
+
+    public int getTempoRestanteJ1() { return tempoRestanteJ1; }
+    public int getTempoRestanteJ2() { return tempoRestanteJ2; }
 
     public Jogador compararPontos(Jogador j1, Jogador j2) {
         if (j1.getPontuacao() > j2.getPontuacao()) {
@@ -238,7 +267,7 @@ public class JogoController {
         } else if (j2.getPontuacao() > j1.getPontuacao()) {
             return j2;
         } else {
-            return null; 
+            return null;
         }
     }
 }

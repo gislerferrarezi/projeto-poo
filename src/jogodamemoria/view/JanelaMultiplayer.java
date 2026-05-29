@@ -21,7 +21,7 @@ public class JanelaMultiplayer extends JFrame implements ActionListener {
     private Tabuleiro tabuleiro;
     private Jogador jogador1;
     private Jogador jogador2;
-    
+
     private JogoController gerenciador;
     private NavegacaoController navegacaoController;
     private boolean tabuleiroBloqueado = false;
@@ -30,16 +30,18 @@ public class JanelaMultiplayer extends JFrame implements ActionListener {
     private JPanel painelJogador2;
     private JLabel lblPontuacaoJ1;
     private JLabel lblPontuacaoJ2;
-    private JLabel lblTempo; // Novo Label para o Cronômetro
+    private JLabel lblTempoJ1;
+    private JLabel lblTempoJ2;
     private JPanel painelTabuleiro;
     private ArrayList<JButton> botoesCartas = new ArrayList<>();
 
-    public JanelaMultiplayer(Tabuleiro tabuleiro, Jogador jogador1, Jogador jogador2, NavegacaoController navegacaoController) {
+    public JanelaMultiplayer(Tabuleiro tabuleiro, Jogador jogador1, Jogador jogador2,
+            NavegacaoController navegacaoController) {
         this.tabuleiro = tabuleiro;
         this.jogador1 = jogador1;
         this.jogador2 = jogador2;
-        this.navegacaoController = navegacaoController;        
-        
+        this.navegacaoController = navegacaoController;
+
         this.gerenciador = new JogoController(tabuleiro, jogador1, jogador2);
 
         setTitle("Jogo da Memória - Modo Multiplayer");
@@ -48,29 +50,26 @@ public class JanelaMultiplayer extends JFrame implements ActionListener {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
 
-        // Configuração de linhas e colunas    
+        // Configuração de linhas e colunas
         int lines = 5;
         int colunas = 6;
 
-        // --- PAINEL TOPO (Contém Jogador 1 e Cronômetro) ---
-        JPanel painelTopo = new JPanel(new BorderLayout());
-        
+        // --- NORTE - Jogador 1 ---
         painelJogador1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel lblNomeJ1 = new JLabel("Jogador 1: " + jogador1.getNome() + "  |  ");
-        lblPontuacaoJ1 = new JLabel("Pares: " + jogador1.getPontuacao());
+        lblPontuacaoJ1 = new JLabel("Pares: " + jogador1.getPontuacao() + "  |  ");
+        lblTempoJ1 = new JLabel("Tempo: 30s");
+
         lblNomeJ1.setFont(new Font("Arial", Font.BOLD, 18));
         lblPontuacaoJ1.setFont(new Font("Arial", Font.BOLD, 18));
+        lblTempoJ1.setFont(new Font("Arial", Font.BOLD, 18));
+        lblTempoJ1.setForeground(Color.RED);
+
         painelJogador1.add(lblNomeJ1);
         painelJogador1.add(lblPontuacaoJ1);
+        painelJogador1.add(lblTempoJ1);
 
-        lblTempo = new JLabel("Tempo: 30s", SwingConstants.CENTER);
-        lblTempo.setFont(new Font("Arial", Font.BOLD, 22));
-        lblTempo.setForeground(Color.RED);
-
-        painelTopo.add(painelJogador1, BorderLayout.WEST);
-        painelTopo.add(lblTempo, BorderLayout.CENTER);
-        
-        add(painelTopo, BorderLayout.NORTH); 
+        add(painelJogador1, BorderLayout.NORTH);
 
         // --- CENTRO - Tabuleiro ---
         painelTabuleiro = new JPanel(new GridLayout(lines, colunas, 15, 15));
@@ -89,47 +88,54 @@ public class JanelaMultiplayer extends JFrame implements ActionListener {
         // --- SUL - Jogador 2 ---
         painelJogador2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel lblNomeJ2 = new JLabel("Jogador 2: " + jogador2.getNome() + "  |  ");
-        lblPontuacaoJ2 = new JLabel("Pares: " + jogador2.getPontuacao());
+        lblPontuacaoJ2 = new JLabel("Pares: " + jogador2.getPontuacao() + "  |  ");
+        lblTempoJ2 = new JLabel("Tempo: 30s");
 
         lblNomeJ2.setFont(new Font("Arial", Font.BOLD, 18));
         lblPontuacaoJ2.setFont(new Font("Arial", Font.BOLD, 18));
+        lblTempoJ2.setFont(new Font("Arial", Font.BOLD, 18));
+        lblTempoJ2.setForeground(Color.RED);
 
         painelJogador2.add(lblNomeJ2);
         painelJogador2.add(lblPontuacaoJ2);
-        add(painelJogador2, BorderLayout.SOUTH); 
-        
+        painelJogador2.add(lblTempoJ2);
+       
+        add(painelJogador2, BorderLayout.SOUTH);
+
         // --- CONFIGURAÇÃO DO CRONÔMETRO ---
         gerenciador.configurarCallbacksCronometro(
-            () -> { // Ação que roda a cada segundo (Tick)
-                lblTempo.setText("Tempo: " + gerenciador.getTempoRestante() + "s");
-            },
-            () -> { // Ação que roda quando o tempo acaba (Timeout)
-                tabuleiroBloqueado = true;
-                JOptionPane.showMessageDialog(this, "Tempo esgotado! Passou a vez.", "Alerta", JOptionPane.WARNING_MESSAGE);
-                sincronizarCartasVisuais();
-                atualizarHUD();               
-                tabuleiroBloqueado = false;
-            }
-        );
-
+                () -> { // Ação do Tick
+                    lblTempoJ1.setText("Tempo: " + gerenciador.getTempoRestanteJ1() + "s");
+                    lblTempoJ2.setText("Tempo: " + gerenciador.getTempoRestanteJ2() + "s");
+                },
+                () -> { // Ação do Timeout
+                    tabuleiroBloqueado = true;
+                    JOptionPane.showMessageDialog(this, "Tempo esgotado! Passou a vez.", "Alerta",
+                            JOptionPane.WARNING_MESSAGE);
+                    sincronizarCartasVisuais();
+                    atualizarHUD();
+                    tabuleiroBloqueado = false;
+                    gerenciador.iniciarCronometro();
+                });
         atualizarHUD();
-        gerenciador.iniciarCronometro(); // Dispara o relógio assim que a tela abre
+        gerenciador.iniciarCronometro();
     }
-    
+
     private void atualizarHUD() {
         lblPontuacaoJ1.setText("Pares: " + jogador1.getPontuacao());
         lblPontuacaoJ2.setText("Pares: " + jogador2.getPontuacao());
-        lblTempo.setText("Tempo: " + gerenciador.getTempoRestante() + "s");
+        lblTempoJ1.setText("Tempo: " + gerenciador.getTempoRestanteJ1() + "s");
+        lblTempoJ2.setText("Tempo: " + gerenciador.getTempoRestanteJ2() + "s");
 
         if (gerenciador.getJogadorAtual() == 0) {
             painelJogador1.setBackground(new Color(173, 216, 230)); // Azul Claro para J1
-            painelJogador2.setBackground(null); 
+            painelJogador2.setBackground(null);
         } else {
-            painelJogador1.setBackground(null); 
-            painelJogador2.setBackground(new Color(255, 182, 193)); // Rosa/Vermelho Claro para J2
+            painelJogador1.setBackground(null);
+            painelJogador2.setBackground(new Color(255, 182, 193)); // Rosa Claro para J2
         }
     }
-    
+
     private void sincronizarCartasVisuais() {
         for (int i = 0; i < botoesCartas.size(); i++) {
             Carta carta = tabuleiro.getCarta(i);
@@ -143,7 +149,8 @@ public class JanelaMultiplayer extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (tabuleiroBloqueado) return;
+        if (tabuleiroBloqueado)
+            return;
 
         for (int i = 0; i < botoesCartas.size(); i++) {
             if (e.getSource() == botoesCartas.get(i)) {
@@ -152,12 +159,13 @@ public class JanelaMultiplayer extends JFrame implements ActionListener {
 
                 switch (resultado) {
                     case PRIMEIRA_CARTA_VIRADA:
-                        botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());                       
+                        botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());
                         break;
 
                     case ACERTOU_PAR:
                         botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());
-                        atualizarHUD();                         
+                        gerenciador.resetarCronometro();
+                        atualizarHUD();
                         break;
 
                     case ERROU_PAR:
@@ -167,31 +175,33 @@ public class JanelaMultiplayer extends JFrame implements ActionListener {
                         Timer timer = new Timer(1000, evento -> {
                             sincronizarCartasVisuais();
                             tabuleiroBloqueado = false;
-                            atualizarHUD(); 
+                            gerenciador.resetarCronometro();
+                            atualizarHUD();
                         });
                         timer.setRepeats(false);
-                        timer.start();                       
+                        timer.start();
                         break;
 
                     case PERDEU_A_VEZ:
-                        botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor()); 
+                        botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());
                         tabuleiroBloqueado = true;
-                        
+
                         Timer timerPunicao = new Timer(1500, evento -> {
-                            sincronizarCartasVisuais(); 
+                            sincronizarCartasVisuais();
                             tabuleiroBloqueado = false;
+                            gerenciador.resetarCronometro();
                             atualizarHUD();
                         });
                         timerPunicao.setRepeats(false);
-                        timerPunicao.start();                      
+                        timerPunicao.start();
                         break;
 
                     case VITORIA:
                         gerenciador.pararCronometro();
                         botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());
-                        atualizarHUD();                        
-                       
-                        Jogador vencedor = gerenciador.compararPontos(jogador1, jogador2);                        
+                        atualizarHUD();
+
+                        Jogador vencedor = gerenciador.compararPontos(jogador1, jogador2);
                         navegacaoController.exibirVitoriaMultiplayer(this, vencedor, jogador1, jogador2);
                         break;
 
