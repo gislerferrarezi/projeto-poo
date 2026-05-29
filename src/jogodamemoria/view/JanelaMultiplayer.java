@@ -99,7 +99,7 @@ public class JanelaMultiplayer extends JFrame implements ActionListener {
         painelJogador2.add(lblNomeJ2);
         painelJogador2.add(lblPontuacaoJ2);
         painelJogador2.add(lblTempoJ2);
-       
+
         add(painelJogador2, BorderLayout.SOUTH);
 
         // --- CONFIGURAÇÃO DO CRONÔMETRO ---
@@ -164,6 +164,13 @@ public class JanelaMultiplayer extends JFrame implements ActionListener {
 
                     case ACERTOU_PAR:
                         botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());
+                        gerenciador.resetarCronometro();
+                        atualizarHUD();
+                        break;
+
+                    case EFEITO_ESPECIAL_ATIVADO:                        
+                        botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());                       
+                        sincronizarCartasVisuais();
                         gerenciador.resetarCronometro();
                         atualizarHUD();
                         break;

@@ -58,7 +58,6 @@ public class NavegacaoController implements ActionListener {
 
         this.janelaMenuMultiplayer.getBtnVoltar().addActionListener(this);
         this.janelaMenuMultiplayer.getBtnJogar().addActionListener(this);
-      
 
         this.janelaCreditos.getBtnVoltar().addActionListener(this);
     }
@@ -102,17 +101,17 @@ public class NavegacaoController implements ActionListener {
             janelaMenuPrincipal.repaint();
         }
 
-        else if (e.getSource() == janelaMenuPrincipal.getBtnSair()) {            
+        else if (e.getSource() == janelaMenuPrincipal.getBtnSair()) {
             int resposta = JOptionPane.showConfirmDialog(
                     janelaMenuPrincipal,
                     "Deseja realmente sair do jogo?",
                     "Confirmar Saída",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE);
-            
+
             if (resposta == JOptionPane.YES_OPTION) {
                 System.exit(0);
-            }            
+            }
         }
 
         // 2. CLIQUES DO MENU DE DIFICULDADE SINGLEPLAYER
@@ -135,7 +134,7 @@ public class NavegacaoController implements ActionListener {
             cardLayout.show(painelContentor, "MENU_PRINCIPAL");
             janelaMenuPrincipal.revalidate();
             janelaMenuPrincipal.repaint();
-        }      
+        }
 
         else if (e.getSource() == janelaMenuMultiplayer.getBtnJogar()) {
             iniciarPartidaMultiplayer(12);
@@ -191,12 +190,10 @@ public class NavegacaoController implements ActionListener {
 
                 String nome1 = janelaVitoriaMultiplayer.getJogador1().getNome();
                 String nome2 = janelaVitoriaMultiplayer.getJogador2().getNome();
-
-                // Calculando quantos pares tinha no jogo que acabou de terminar
-                int totalPares = jogoAntigo.getContentPane().getComponentCount() > 14 ? 12 : 6;
+             
+                int totalPares = 12;                             
                 jogoAntigo.dispose();
 
-                // Recria a partida
                 Tabuleiro novoTabuleiro = new Tabuleiro(totalPares, true);
                 Jogador j1 = new Jogador(nome1);
                 Jogador j2 = new Jogador(nome2);

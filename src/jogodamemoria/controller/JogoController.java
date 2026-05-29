@@ -20,6 +20,7 @@ public class JogoController {
     private int totalParesFormados = 0;
     private int tentativas = 0;
     private int jogadorAtual = 0; // 0 = Jogador 1, 1 = Jogador 2
+    private int multiplicadorPontos = 1;
 
     // --- VARIÁVEIS DO CRONÔMETRO E BÔNUS ---
     private Timer cronometro;
@@ -35,6 +36,7 @@ public class JogoController {
         ACERTOU_PAR,
         ERROU_PAR,
         PERDEU_A_VEZ,
+        EFEITO_ESPECIAL_ATIVADO,
         VITORIA
     }
 
@@ -50,7 +52,14 @@ public class JogoController {
         this.tabuleiro = tabuleiro;
         this.jogador1 = jogador1;
         this.jogador2 = jogador2;
-        this.totalParesObjetivo = tabuleiro.getTamanho() / 2;
+        int cartasNormais = 0;
+        for (int i = 0; i < tabuleiro.getTamanho(); i++) {
+            // Conta APENAS as cartas normais para formar os pares
+            if (tabuleiro.getCarta(i).getTipo() == Tipo_Carta.NORMAL) {
+                cartasNormais++;
+            }
+        }
+        this.totalParesObjetivo = cartasNormais / 2;
         inicializarCronometro();
     }
 
@@ -62,26 +71,43 @@ public class JogoController {
             return ResultadoJogada.IGNORAR;
         }
 
-        if (cartaClicada.getTipo() == Tipo_Carta.PERDEU_A_VEZ) {
+        // --- INTERCEPTA TODAS AS CARTAS ESPECIAIS (Ação Instantânea) ---
+        if (cartaClicada.getTipo() != Tipo_Carta.NORMAL) {
             cartaClicada.virar();
+            cartaClicada.setDescoberta(true);
+            
+            // Aplica os efeitos na hora
+            switch (cartaClicada.getTipo()) {
+                case PERDEU_A_VEZ:
+                    if (primeiraCarta != null) {
+                        primeiraCarta.esconder();
+                        primeiraCarta = null;
+                    }
+                    multiplicadorPontos = 1;
+                    alternarTurnoPorPunicao();
+                    return ResultadoJogada.PERDEU_A_VEZ;
 
-            if (primeiraCarta != null) {
-                primeiraCarta.esconder();
-                primeiraCarta = null;
+                case JOGUE_DE_NOVO:
+                    jogadorGanhouBonusTurno = true;
+                    return ResultadoJogada.EFEITO_ESPECIAL_ATIVADO;
+
+                case DOBRO_PONTOS:
+                    multiplicadorPontos = multiplicadorPontos * 2;
+                    return ResultadoJogada.EFEITO_ESPECIAL_ATIVADO;
+
+                default:
+                    return ResultadoJogada.IGNORAR;
             }
-
-            alternarTurnoPorPunicao();
-            return ResultadoJogada.PERDEU_A_VEZ;
         }
 
-        // --- CONTROLE DO PRIMEIRO CLIQUE ---
+        // --- CONTROLE DO PRIMEIRO CLIQUE (Apenas Cartas Normais chegam aqui) ---
         if (primeiraCarta == null) {
             primeiraCarta = cartaClicada;
             primeiraCarta.virar();
             return ResultadoJogada.PRIMEIRA_CARTA_VIRADA;
         }
 
-        // --- CONTROLE DO SEGUNDO CLIQUE ---
+        // --- CONTROLE DO SEGUNDO CLIQUE (Apenas Cartas Normais) ---
         if (segundaCarta == null && cartaClicada != primeiraCarta) {
             segundaCarta = cartaClicada;
             segundaCarta.virar();
@@ -89,37 +115,33 @@ public class JogoController {
 
             pararCronometro();
 
+            // Verifica se formou par
             if (primeiraCarta.getId() == segundaCarta.getId()) {
                 primeiraCarta.setDescoberta(true);
                 segundaCarta.setDescoberta(true);
 
-                int pontosDaJogada = 1;
-                if (primeiraCarta.getTipo() == Tipo_Carta.DOBRO_PONTOS) {
-                    pontosDaJogada = 2;
-                }
+                int pontosGanhos = 1 * multiplicadorPontos;
 
                 if (jogador1 != null) {
                     if (jogadorAtual == 0) {
-                        for (int k = 0; k < pontosDaJogada; k++)
+                        for (int k = 0; k < pontosGanhos; k++)
                             jogador1.ganharPonto();
                     } else {
-                        for (int k = 0; k < pontosDaJogada; k++)
+                        for (int k = 0; k < pontosGanhos; k++)
                             jogador2.ganharPonto();
                     }
                 } else {
-                    for (int k = 0; k < pontosDaJogada; k++)
+                    for (int k = 0; k < pontosGanhos; k++)
                         jogador.ganharPonto();
                 }
+                multiplicadorPontos = 1;
 
                 totalParesFormados++;
-
-                if (primeiraCarta.getTipo() == Tipo_Carta.JOGUE_DE_NOVO) {
-                    jogadorGanhouBonusTurno = true;
-                }
 
                 primeiraCarta = null;
                 segundaCarta = null;
 
+                // Verifica vitória
                 if (totalParesFormados == totalParesObjetivo) {
                     return ResultadoJogada.VITORIA;
                 }
@@ -127,19 +149,17 @@ public class JogoController {
                 return ResultadoJogada.ACERTOU_PAR;
 
             } else {
+                // Errou o par
                 primeiraCarta.esconder();
                 segundaCarta.esconder();
+
+                multiplicadorPontos = 1;
 
                 if (jogador1 != null) {
                     if (jogadorGanhouBonusTurno) {
                         jogadorGanhouBonusTurno = false;
                     } else {
-                        // Passa o turno normalmente
-                        if (jogadorAtual == 0) {
-                            jogadorAtual++;
-                        } else {
-                            jogadorAtual--;
-                        }
+                        alternarTurnoPorPunicao();
                     }
                 }
 
@@ -226,12 +246,12 @@ public class JogoController {
             tempoRestanteJ2 = 30;
 
             if (onTickCallback != null) {
-                onTickCallback.run(); 
+                onTickCallback.run();
             }
             cronometro.start();
         }
     }
-   
+
     public void configurarCallbacksCronometro(Runnable onTick, Runnable onTimeout) {
         this.onTickCallback = onTick;
         this.onTimeoutCallback = onTimeout;
@@ -258,8 +278,13 @@ public class JogoController {
         return jogador2;
     }
 
-    public int getTempoRestanteJ1() { return tempoRestanteJ1; }
-    public int getTempoRestanteJ2() { return tempoRestanteJ2; }
+    public int getTempoRestanteJ1() {
+        return tempoRestanteJ1;
+    }
+
+    public int getTempoRestanteJ2() {
+        return tempoRestanteJ2;
+    }
 
     public Jogador compararPontos(Jogador j1, Jogador j2) {
         if (j1.getPontuacao() > j2.getPontuacao()) {

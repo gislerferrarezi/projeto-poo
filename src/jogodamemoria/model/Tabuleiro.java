@@ -21,14 +21,14 @@ public class Tabuleiro {
         if (!isMultiplayer) {
             // --- MODO SOLO ---
             for (int i = 1; i <= totalPares; i++) {
-                String valorCarta = "Icone_" + i;
+                String valorCarta = "" + i;
                 cartas.add(new Carta(i, valorCarta));
                 cartas.add(new Carta(i, valorCarta));
             }
         } else {            
             int j = 1;            
             for (int i = 1; i <= (totalPares); i++) {
-                String valorCarta = "Icone_" + j;
+                String valorCarta =  "" + j;
                 cartas.add(new Carta(j, valorCarta));
                 cartas.add(new Carta(j, valorCarta));
                 j++; 
