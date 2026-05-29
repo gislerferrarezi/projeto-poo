@@ -57,7 +57,7 @@ public class JanelaMultiplayer extends JFrame implements ActionListener {
         // --- NORTE - Jogador 1 ---
         painelJogador1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel lblNomeJ1 = new JLabel("Jogador 1: " + jogador1.getNome() + "  |  ");
-        lblPontuacaoJ1 = new JLabel("Pares: " + jogador1.getPontuacao() + "  |  ");
+        lblPontuacaoJ1 = new JLabel("Pontos: " + jogador1.getPontuacao() + "  |  ");
         lblTempoJ1 = new JLabel("Tempo: 30s");
 
         lblNomeJ1.setFont(new Font("Arial", Font.BOLD, 18));
@@ -88,7 +88,7 @@ public class JanelaMultiplayer extends JFrame implements ActionListener {
         // --- SUL - Jogador 2 ---
         painelJogador2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel lblNomeJ2 = new JLabel("Jogador 2: " + jogador2.getNome() + "  |  ");
-        lblPontuacaoJ2 = new JLabel("Pares: " + jogador2.getPontuacao() + "  |  ");
+        lblPontuacaoJ2 = new JLabel("Pontos: " + jogador2.getPontuacao() + "  |  ");
         lblTempoJ2 = new JLabel("Tempo: 30s");
 
         lblNomeJ2.setFont(new Font("Arial", Font.BOLD, 18));
@@ -122,8 +122,8 @@ public class JanelaMultiplayer extends JFrame implements ActionListener {
     }
 
     private void atualizarHUD() {
-        lblPontuacaoJ1.setText("Pares: " + jogador1.getPontuacao());
-        lblPontuacaoJ2.setText("Pares: " + jogador2.getPontuacao());
+        lblPontuacaoJ1.setText("Pontos: " + jogador1.getPontuacao());
+        lblPontuacaoJ2.setText("Pontos: " + jogador2.getPontuacao());
         lblTempoJ1.setText("Tempo: " + gerenciador.getTempoRestanteJ1() + "s");
         lblTempoJ2.setText("Tempo: " + gerenciador.getTempoRestanteJ2() + "s");
 
