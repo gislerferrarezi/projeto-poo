@@ -59,7 +59,7 @@ public class JanelaMenuMultiplayer extends JPanel {
         JLabel lblDescricaoRegras = new JLabel(
                 "<html><body style='width: 240px; font-family: Arial; font-size: 13px; color: #333333;'>"
                         + "<b>⏱️ Tempo Limite:</b><br>"
-                        + "Cada jogador tem no máximo <b>1 minuto</b> para fazer sua jogada, senão perde a vez!<br><br>"
+                        + "Cada jogador tem no máximo <b>30 segundos</b> para fazer sua jogada, senão perde a vez!<br><br>"
                         + "<b>🃏 Cartas Especiais:</b><br>"
                         + "Além dos pares normais, vocês encontrarão:<br><br>"
                         + "• 🚫 <b>Perdeu a vez:</b> Passa o turno para o oponente imediatamente.<br><br>"
