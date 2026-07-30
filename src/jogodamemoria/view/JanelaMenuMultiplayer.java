@@ -1,4 +1,4 @@
-package src.jogodamemoria.view;
+package jogodamemoria.view;
 
 import javax.swing.*;
 import java.awt.*;

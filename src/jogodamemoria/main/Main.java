@@ -1,14 +1,14 @@
-package src.jogodamemoria.main;
+package jogodamemoria.main;
 
-import src.jogodamemoria.controller.NavegacaoController;
-import src.jogodamemoria.view.JanelaMenuPrincipal;
+import jogodamemoria.controller.NavegacaoController;
+import jogodamemoria.view.JanelaMenuPrincipal;
 
 public class Main {
     public static void main(String[] args) {
-        JanelaMenuPrincipal menu = new JanelaMenuPrincipal();   
+        JanelaMenuPrincipal menu = new JanelaMenuPrincipal();      
 
         new NavegacaoController(menu);
-    
+
         menu.setVisible(true);
-    }   
+    }
 }

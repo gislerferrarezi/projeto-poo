@@ -1,20 +1,20 @@
-package src.jogodamemoria.controller;
+package jogodamemoria.controller;
 
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-import src.jogodamemoria.model.Jogador;
-import src.jogodamemoria.model.Tabuleiro;
-import src.jogodamemoria.view.JanelaCreditos;
-import src.jogodamemoria.view.JanelaMenuMultiplayer;
-import src.jogodamemoria.view.JanelaMenuPrincipal;
-import src.jogodamemoria.view.JanelaMenuSinglePlayer;
-import src.jogodamemoria.view.JanelaSinglePlayer;
-import src.jogodamemoria.view.JanelaVitoriaSingle;
-import src.jogodamemoria.view.JanelaMultiplayer;
-import src.jogodamemoria.view.JanelaVitoriaMultiplayer;
+import jogodamemoria.model.Jogador;
+import jogodamemoria.model.Tabuleiro;
+import jogodamemoria.view.JanelaCreditos;
+import jogodamemoria.view.JanelaMenuMultiplayer;
+import jogodamemoria.view.JanelaMenuPrincipal;
+import jogodamemoria.view.JanelaMenuSinglePlayer;
+import jogodamemoria.view.JanelaSinglePlayer;
+import jogodamemoria.view.JanelaVitoriaSingle;
+import jogodamemoria.view.JanelaMultiplayer;
+import jogodamemoria.view.JanelaVitoriaMultiplayer;
 
 public class NavegacaoController implements ActionListener {
 

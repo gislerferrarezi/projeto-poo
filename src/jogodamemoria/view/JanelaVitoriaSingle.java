@@ -1,11 +1,11 @@
-package src.jogodamemoria.view;
+package jogodamemoria.view;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import javax.swing.*;
-import src.jogodamemoria.model.Jogador;
-import src.jogodamemoria.model.Tabuleiro;
+import jogodamemoria.model.Jogador;
+import jogodamemoria.model.Tabuleiro;
 
 public class JanelaVitoriaSingle extends JDialog {
 

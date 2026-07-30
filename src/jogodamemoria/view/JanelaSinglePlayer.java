@@ -1,4 +1,4 @@
-package src.jogodamemoria.view;
+package jogodamemoria.view;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -8,11 +8,11 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.*;
-import src.jogodamemoria.model.Tabuleiro;
-import src.jogodamemoria.model.Jogador;
-import src.jogodamemoria.controller.JogoController;
-import src.jogodamemoria.controller.JogoController.ResultadoJogada;
-import src.jogodamemoria.controller.NavegacaoController;
+import jogodamemoria.model.Tabuleiro;
+import jogodamemoria.model.Jogador;
+import jogodamemoria.controller.JogoController;
+import jogodamemoria.controller.JogoController.ResultadoJogada;
+import jogodamemoria.controller.NavegacaoController;
 
 public class JanelaSinglePlayer extends JFrame implements ActionListener {
 
