@@ -1,4 +1,4 @@
-package src.jogodamemoria.model;
+package jogodamemoria.model;
 
 import java.util.ArrayList;
 import java.util.Collections;

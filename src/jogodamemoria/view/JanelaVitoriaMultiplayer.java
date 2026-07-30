@@ -55,8 +55,8 @@ public class JanelaVitoriaMultiplayer extends JDialog {
         JLabel lblSubtitulo = new JLabel("Placar Final:", JLabel.CENTER);
         lblSubtitulo.setFont(new Font("Arial", Font.BOLD, 16));
         
-        JLabel lblPontosJ1 = new JLabel(jogador1.getNome() + ": " + jogador1.getPontuacao() + " pares", JLabel.CENTER);
-        JLabel lblPontosJ2 = new JLabel(jogador2.getNome() + ": " + jogador2.getPontuacao() + " pares", JLabel.CENTER);
+        JLabel lblPontosJ1 = new JLabel(jogador1.getNome() + ": " + jogador1.getPontuacao() + " pontos", JLabel.CENTER);
+        JLabel lblPontosJ2 = new JLabel(jogador2.getNome() + ": " + jogador2.getPontuacao() + " pontos", JLabel.CENTER);
         
         lblPontosJ1.setFont(new Font("Arial", Font.PLAIN, 16));
         lblPontosJ2.setFont(new Font("Arial", Font.PLAIN, 16));
