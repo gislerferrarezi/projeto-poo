@@ -11,8 +11,7 @@ public class JanelaMenuPrincipal extends JFrame {
     private JButton btnDoisJogadores;
     private JButton btnCreditos;
     private JButton btnSair;
-
-    // Cores extraídas do seu design
+   
     private final Color COR_TITULO = new Color(0x2D1B4E); // Roxo escuro
     private final Color COR_SUBTITULO = new Color(0x3F2B68); // Roxo médio
     private final Color COR_BOTAO_PADRAO = new Color(0x5B4B9B); // Roxo do botão
@@ -37,23 +36,20 @@ public class JanelaMenuPrincipal extends JFrame {
         painelMenu.setLayout(new BoxLayout(painelMenu, BoxLayout.Y_AXIS));
 
         // 1. TÍTULOS
-        JLabel lblTitulo = new JLabel("Câmpus.find()");
+        JLabel lblTitulo = new JLabel("Campus.find()");
         lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 72));
         lblTitulo.setForeground(COR_TITULO);
         lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Subtítulo principal centralizado com efeito de digitação
-        JLabel lblSubtitulo = new JLabel("");
-        // 'Segoe UI Symbol' suporta tanto as letras da Segoe UI quanto o caractere '✦'
+        JLabel lblSubtitulo = new JLabel("");        
         lblSubtitulo.setFont(new Font("Consolas", Font.BOLD, 32));
         lblSubtitulo.setForeground(COR_SUBTITULO);
-        lblSubtitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        // Texto puro (SEM HTML) para o efeito de digitação não pirar
-        String[] textos = {"UNESP · Campus Bauru", "Desafie a sua mente!"};
-
+        lblSubtitulo.setAlignmentX(Component.CENTER_ALIGNMENT);       
+        String[] textos = {"UNESP · Câmpus Bauru", "Desafie a sua mente!"};
         new EfeitoDigitacao(lblSubtitulo, textos).iniciar();
 
+        // Linha Decorativa
         JLabel lblLinhaDecorativa = new JLabel("─────────  ✦  ─────────");
         lblLinhaDecorativa.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 36));
         lblLinhaDecorativa.setForeground(COR_SUBTITULO);
@@ -63,7 +59,7 @@ public class JanelaMenuPrincipal extends JFrame {
         painelMenu.add(lblTitulo);
         painelMenu.add(Box.createVerticalStrut(10));
         painelMenu.add(lblLinhaDecorativa);
-        painelMenu.add(Box.createVerticalStrut(20)); // Espaço até os botões
+        painelMenu.add(Box.createVerticalStrut(20)); 
         painelMenu.add(lblSubtitulo);
         painelMenu.add(Box.createVerticalStrut(20)); // Espaço até os botões
 
@@ -90,14 +86,12 @@ public class JanelaMenuPrincipal extends JFrame {
         painelPrincipal.add(painelMenu);
     }
 
-    // Método Final: Ícones redimensionados (26px), alinhados em coluna e texto
-    // centralizado
+    // Método Final: Ícones redimensionados (26px), alinhados em coluna e texto centralizado
     private JButton criarBotaoBasico(ImageIcon iconeOriginal, String texto) {
         JButton botao = new JButton();
         botao.setLayout(new BorderLayout());
 
-        // Área fixa reservada para a coluna de ícones (mantém o alinhamento vertical
-        // entre botões)
+        // Área fixa reservada para a coluna de ícones (mantém o alinhamento vertical entre botões)
         int LARGURA_AREA_ICONE = 60;
 
         // 1. ESQUERDA: Ícone Redimensionado e Centralizado na sua caixinha

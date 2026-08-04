@@ -15,6 +15,7 @@ import jogodamemoria.view.JanelaSinglePlayer;
 import jogodamemoria.view.JanelaVitoriaSingle;
 import jogodamemoria.view.JanelaMultiplayer;
 import jogodamemoria.view.JanelaVitoriaMultiplayer;
+import jogodamemoria.view.JanelaSair;
 
 public class NavegacaoController implements ActionListener {
 
@@ -22,6 +23,7 @@ public class NavegacaoController implements ActionListener {
     private JanelaMenuSinglePlayer janelaMenuSinglePlayer;
     private JanelaMenuMultiplayer janelaMenuMultiplayer;
     private JanelaCreditos janelaCreditos;
+    private JanelaSair janelaSair;
 
     private JanelaVitoriaSingle janelaVitoriaSingle;
     private JanelaVitoriaMultiplayer janelaVitoriaMultiplayer;
@@ -36,6 +38,7 @@ public class NavegacaoController implements ActionListener {
         this.janelaMenuSinglePlayer = new JanelaMenuSinglePlayer();
         this.janelaMenuMultiplayer = new JanelaMenuMultiplayer();
         this.janelaCreditos = new JanelaCreditos();
+        this.janelaSair = new JanelaSair();
 
         JPanel painelInicio = (JPanel) menuPrincipal.getContentPane();
 
@@ -51,6 +54,9 @@ public class NavegacaoController implements ActionListener {
         this.janelaMenuPrincipal.getBtnDoisJogadores().addActionListener(this);
         this.janelaMenuPrincipal.getBtnCreditos().addActionListener(this);
         this.janelaMenuPrincipal.getBtnSair().addActionListener(this);
+
+        this.janelaSair.getBtnSair().addActionListener(this);
+        this.janelaSair.getBtnCancelar().addActionListener(this);
 
         this.janelaMenuSinglePlayer.getBtnVoltar().addActionListener(this);
         this.janelaMenuSinglePlayer.getBtnJogarFacil().addActionListener(this);
@@ -102,16 +108,16 @@ public class NavegacaoController implements ActionListener {
         }
 
         else if (e.getSource() == janelaMenuPrincipal.getBtnSair()) {
-            int resposta = JOptionPane.showConfirmDialog(
-                    janelaMenuPrincipal,
-                    "Deseja realmente sair do jogo?",
-                    "Confirmar Saída",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE);
+            janelaSair.setLocationRelativeTo(janelaMenuPrincipal);
+            janelaSair.setVisible(true);
+        }
 
-            if (resposta == JOptionPane.YES_OPTION) {
-                System.exit(0);
-            }
+        else if (e.getSource() == janelaSair.getBtnSair()) {
+            System.exit(0);
+        }
+
+        else if (e.getSource() == janelaSair.getBtnCancelar()) {
+            janelaSair.dispose();
         }
 
         // 2. CLIQUES DO MENU DE DIFICULDADE SINGLEPLAYER
@@ -190,8 +196,8 @@ public class NavegacaoController implements ActionListener {
 
                 String nome1 = janelaVitoriaMultiplayer.getJogador1().getNome();
                 String nome2 = janelaVitoriaMultiplayer.getJogador2().getNome();
-             
-                int totalPares = 12;                             
+
+                int totalPares = 12;
                 jogoAntigo.dispose();
 
                 Tabuleiro novoTabuleiro = new Tabuleiro(totalPares, true);
