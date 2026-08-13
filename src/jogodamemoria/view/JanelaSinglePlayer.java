@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.awt.event.KeyEvent;
 
 import javax.swing.*;
 import jogodamemoria.model.Tabuleiro;
@@ -14,9 +15,9 @@ import jogodamemoria.controller.JogoController;
 import jogodamemoria.controller.JogoController.ResultadoJogada;
 import jogodamemoria.controller.NavegacaoController;
 
-public class JanelaSinglePlayer extends JFrame implements ActionListener {
+public class JanelaSinglePlayer extends JPanel implements ActionListener {
 
-    private Tabuleiro tabuleiro;   
+    private Tabuleiro tabuleiro;
     private Jogador jogador;
 
     private NavegacaoController navegacaoController;
@@ -38,11 +39,6 @@ public class JanelaSinglePlayer extends JFrame implements ActionListener {
         this.jogador = jogador;
         this.navegacaoController = navegacaoController;
         this.gerenciador = new JogoController(tabuleiro, jogador);
-
-        setTitle("Jogo da Memória - Modo Solo");
-        setSize(1280, 800);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
 
         setLayout(new BorderLayout(20, 20));
 
@@ -111,13 +107,15 @@ public class JanelaSinglePlayer extends JFrame implements ActionListener {
         });
 
         cronometro.start();
+
+        configurarBotaoEsc();   
     }
 
-    public void reiniciarJogo() { 
+    public void reiniciarJogo() {
         this.tabuleiro = new Tabuleiro(this.tabuleiro.getTamanho() / 2, false);
-       
+
         this.jogador.resetarPontos();
-       
+
         this.gerenciador = new JogoController(this.tabuleiro, this.jogador);
         this.indexPrimeiraCarta = -1;
         this.tabuleiroBloqueado = false;
@@ -141,7 +139,25 @@ public class JanelaSinglePlayer extends JFrame implements ActionListener {
         painelTabuleiro.revalidate();
         painelTabuleiro.repaint();
 
-        cronometro.start();        
+        cronometro.start();
+    }
+
+    private void configurarBotaoEsc() {
+        InputMap inputMap = this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = this.getActionMap();
+
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "acaoEsc");
+
+        actionMap.put("acaoEsc", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                navegacaoController.solicitarVoltarAoMenu(
+                        JanelaSinglePlayer.this,
+                        () -> cronometro.stop(), // Como pausar
+                        () -> cronometro.start() // Como retomar
+                );
+            }
+        });
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+import java.awt.Component;
 
 import jogodamemoria.model.Jogador;
 import jogodamemoria.model.Tabuleiro;
@@ -15,7 +16,6 @@ import jogodamemoria.view.JanelaSinglePlayer;
 import jogodamemoria.view.JanelaVitoriaSingle;
 import jogodamemoria.view.JanelaMultiplayer;
 import jogodamemoria.view.JanelaVitoriaMultiplayer;
-import jogodamemoria.view.JanelaSair;
 
 public class NavegacaoController implements ActionListener {
 
@@ -23,7 +23,10 @@ public class NavegacaoController implements ActionListener {
     private JanelaMenuSinglePlayer janelaMenuSinglePlayer;
     private JanelaMenuMultiplayer janelaMenuMultiplayer;
     private JanelaCreditos janelaCreditos;
-    private JanelaSair janelaSair;
+
+    // Painéis das partidas (agora estendem JPanel)
+    private JanelaSinglePlayer painelJogoSingle;
+    private JanelaMultiplayer painelJogoMulti;
 
     private JanelaVitoriaSingle janelaVitoriaSingle;
     private JanelaVitoriaMultiplayer janelaVitoriaMultiplayer;
@@ -38,25 +41,23 @@ public class NavegacaoController implements ActionListener {
         this.janelaMenuSinglePlayer = new JanelaMenuSinglePlayer();
         this.janelaMenuMultiplayer = new JanelaMenuMultiplayer();
         this.janelaCreditos = new JanelaCreditos();
-        this.janelaSair = new JanelaSair();
 
         JPanel painelInicio = (JPanel) menuPrincipal.getContentPane();
 
+        // Registra as telas estáticas no CardLayout
         this.painelContentor.add(painelInicio, "MENU_PRINCIPAL");
         this.painelContentor.add(janelaMenuSinglePlayer, "MENU_SINGLEPLAYER");
         this.painelContentor.add(janelaMenuMultiplayer, "MENU_MULTIPLAYER");
         this.painelContentor.add(janelaCreditos, "CREDITOS");
 
         menuPrincipal.setContentPane(painelContentor);
-        cardLayout.show(painelContentor, "MENU_PRINCIPAL"); // Começa no menu inicial
+        cardLayout.show(painelContentor, "MENU_PRINCIPAL");
 
+        // Listeners dos Menus
         this.janelaMenuPrincipal.getBtnUmJogador().addActionListener(this);
         this.janelaMenuPrincipal.getBtnDoisJogadores().addActionListener(this);
         this.janelaMenuPrincipal.getBtnCreditos().addActionListener(this);
         this.janelaMenuPrincipal.getBtnSair().addActionListener(this);
-
-        this.janelaSair.getBtnSair().addActionListener(this);
-        this.janelaSair.getBtnCancelar().addActionListener(this);
 
         this.janelaMenuSinglePlayer.getBtnVoltar().addActionListener(this);
         this.janelaMenuSinglePlayer.getBtnJogarFacil().addActionListener(this);
@@ -71,7 +72,8 @@ public class NavegacaoController implements ActionListener {
     // --- MÉTODOS DE EXIBIR POPUP DE VITÓRIA ---
     public void exibirVitoria(JanelaSinglePlayer janelaJogo, int tentativas, String tempo, Jogador jogador,
             Tabuleiro tabuleiro) {
-        this.janelaVitoriaSingle = new JanelaVitoriaSingle(janelaJogo, tentativas, tempo, jogador, tabuleiro);
+        // Passa a janelaMenuPrincipal como pai do modal (JDialog)
+        this.janelaVitoriaSingle = new JanelaVitoriaSingle(janelaMenuPrincipal, tentativas, tempo, jogador, tabuleiro);
         this.janelaVitoriaSingle.getBtnMenu().addActionListener(this);
         this.janelaVitoriaSingle.getBtnJogarNovamente().addActionListener(this);
         this.janelaVitoriaSingle.setVisible(true);
@@ -79,7 +81,8 @@ public class NavegacaoController implements ActionListener {
 
     public void exibirVitoriaMultiplayer(JanelaMultiplayer janelaJogo, Jogador vencedor, Jogador jogador1,
             Jogador jogador2) {
-        this.janelaVitoriaMultiplayer = new JanelaVitoriaMultiplayer(janelaJogo, vencedor, jogador1, jogador2, null);
+        this.janelaVitoriaMultiplayer = new JanelaVitoriaMultiplayer(janelaMenuPrincipal, vencedor, jogador1, jogador2,
+                null);
         this.janelaVitoriaMultiplayer.getBtnMenu().addActionListener(this);
         this.janelaVitoriaMultiplayer.getBtnJogarNovamente().addActionListener(this);
         this.janelaVitoriaMultiplayer.setVisible(true);
@@ -90,129 +93,82 @@ public class NavegacaoController implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         // 1. CLIQUES DO MENU PRINCIPAL
         if (e.getSource() == janelaMenuPrincipal.getBtnUmJogador()) {
-            cardLayout.show(painelContentor, "MENU_SINGLEPLAYER");
-            janelaMenuPrincipal.revalidate();
-            janelaMenuPrincipal.repaint();
-        }
-
-        else if (e.getSource() == janelaMenuPrincipal.getBtnDoisJogadores()) {
-            cardLayout.show(painelContentor, "MENU_MULTIPLAYER");
-            janelaMenuPrincipal.revalidate();
-            janelaMenuPrincipal.repaint();
-        }
-
-        else if (e.getSource() == janelaMenuPrincipal.getBtnCreditos()) {
-            cardLayout.show(painelContentor, "CREDITOS");
-            janelaMenuPrincipal.revalidate();
-            janelaMenuPrincipal.repaint();
-        }
-
-        else if (e.getSource() == janelaMenuPrincipal.getBtnSair()) {
-            janelaSair.setLocationRelativeTo(janelaMenuPrincipal);
-            janelaSair.setVisible(true);
-        }
-
-        else if (e.getSource() == janelaSair.getBtnSair()) {
+            trocarTela("MENU_SINGLEPLAYER");
+        } else if (e.getSource() == janelaMenuPrincipal.getBtnDoisJogadores()) {
+            trocarTela("MENU_MULTIPLAYER");
+        } else if (e.getSource() == janelaMenuPrincipal.getBtnCreditos()) {
+            trocarTela("CREDITOS");
+        } else if (e.getSource() == janelaMenuPrincipal.getBtnSair()) {
             System.exit(0);
         }
 
-        else if (e.getSource() == janelaSair.getBtnCancelar()) {
-            janelaSair.dispose();
-        }
-
-        // 2. CLIQUES DO MENU DE DIFICULDADE SINGLEPLAYER
+        // 2. CLIQUES DO MENU SINGLEPLAYER
         else if (e.getSource() == janelaMenuSinglePlayer.getBtnVoltar()) {
-            cardLayout.show(painelContentor, "MENU_PRINCIPAL");
-            janelaMenuPrincipal.revalidate();
-            janelaMenuPrincipal.repaint();
+            trocarTela("MENU_PRINCIPAL");
+        } else if (e.getSource() == janelaMenuSinglePlayer.getBtnJogarFacil()) {
+            iniciarPartidaSolo(6);
+        } else if (e.getSource() == janelaMenuSinglePlayer.getBtnJogarPadrao()) {
+            iniciarPartidaSolo(12);
         }
 
-        else if (e.getSource() == janelaMenuSinglePlayer.getBtnJogarFacil()) {
-            iniciarPartidaSolo(6); // 6 pares = 12 cartas
-        }
-
-        else if (e.getSource() == janelaMenuSinglePlayer.getBtnJogarPadrao()) {
-            iniciarPartidaSolo(12); // 12 pares = 24 cartas
-        }
-
-        // 3. CLIQUES DO MENU DE DIFICULDADE MULTIPLAYER
+        // 3. CLIQUES DO MENU MULTIPLAYER
         else if (e.getSource() == janelaMenuMultiplayer.getBtnVoltar()) {
-            cardLayout.show(painelContentor, "MENU_PRINCIPAL");
-            janelaMenuPrincipal.revalidate();
-            janelaMenuPrincipal.repaint();
-        }
-
-        else if (e.getSource() == janelaMenuMultiplayer.getBtnJogar()) {
+            trocarTela("MENU_PRINCIPAL");
+        } else if (e.getSource() == janelaMenuMultiplayer.getBtnJogar()) {
             iniciarPartidaMultiplayer(12);
         }
 
         // 4. CLIQUES DA JANELA CREDITOS
         else if (e.getSource() == janelaCreditos.getBtnVoltar()) {
-            cardLayout.show(painelContentor, "MENU_PRINCIPAL");
-            janelaMenuPrincipal.revalidate();
-            janelaMenuPrincipal.repaint();
+            trocarTela("MENU_PRINCIPAL");
         }
 
         // 5. CLIQUES DA JANELA DE VITÓRIA SINGLE (POPUP)
         if (janelaVitoriaSingle != null) {
-
             if (e.getSource() == janelaVitoriaSingle.getBtnMenu()) {
                 janelaVitoriaSingle.dispose();
-                janelaVitoriaSingle.getJanelaPrincipalJogo().dispose();
-
-                cardLayout.show(painelContentor, "MENU_PRINCIPAL");
-                janelaMenuPrincipal.setVisible(true);
-
                 janelaVitoriaSingle = null;
-            }
-
-            else if (e.getSource() == janelaVitoriaSingle.getBtnJogarNovamente()) {
+                trocarTela("MENU_PRINCIPAL");
+            } else if (e.getSource() == janelaVitoriaSingle.getBtnJogarNovamente()) {
                 janelaVitoriaSingle.dispose();
-
-                JanelaSinglePlayer jogoAtual = (JanelaSinglePlayer) janelaVitoriaSingle.getJanelaPrincipalJogo();
-                jogoAtual.reiniciarJogo();
-
                 janelaVitoriaSingle = null;
+                if (painelJogoSingle != null) {
+                    painelJogoSingle.reiniciarJogo();
+                }
             }
         }
 
         // 6. CLIQUES DA JANELA DE VITÓRIA MULTIPLAYER (POPUP)
         if (janelaVitoriaMultiplayer != null) {
-
             if (e.getSource() == janelaVitoriaMultiplayer.getBtnMenu()) {
                 janelaVitoriaMultiplayer.dispose();
-                janelaVitoriaMultiplayer.getJanelaPrincipalJogo().dispose();
-
-                cardLayout.show(painelContentor, "MENU_PRINCIPAL");
-                janelaMenuPrincipal.setVisible(true);
-
                 janelaVitoriaMultiplayer = null;
-            }
-
-            else if (e.getSource() == janelaVitoriaMultiplayer.getBtnJogarNovamente()) {
-                janelaVitoriaMultiplayer.dispose();
-
-                JanelaMultiplayer jogoAntigo = (JanelaMultiplayer) janelaVitoriaMultiplayer.getJanelaPrincipalJogo();
-
+                trocarTela("MENU_PRINCIPAL");
+            } else if (e.getSource() == janelaVitoriaMultiplayer.getBtnJogarNovamente()) {
                 String nome1 = janelaVitoriaMultiplayer.getJogador1().getNome();
                 String nome2 = janelaVitoriaMultiplayer.getJogador2().getNome();
+                janelaVitoriaMultiplayer.dispose();
+                janelaVitoriaMultiplayer = null;
 
-                int totalPares = 12;
-                jogoAntigo.dispose();
-
-                Tabuleiro novoTabuleiro = new Tabuleiro(totalPares, true);
+                // Reinicia a partida multiplayer recriando o painel
+                Tabuleiro novoTabuleiro = new Tabuleiro(12, true);
                 Jogador j1 = new Jogador(nome1);
                 Jogador j2 = new Jogador(nome2);
 
-                JanelaMultiplayer novoJogo = new JanelaMultiplayer(novoTabuleiro, j1, j2, this);
-                novoJogo.setVisible(true);
-
-                janelaVitoriaMultiplayer = null;
+                painelJogoMulti = new JanelaMultiplayer(novoTabuleiro, j1, j2, this);
+                painelContentor.add(painelJogoMulti, "JOGO_MULTIPLAYER");
+                trocarTela("JOGO_MULTIPLAYER");
             }
         }
     }
 
-    // --- MÉTODOS DE INICIALIZAÇÃO DE PARTIDA ---
+    // --- MÉTODOS AUXILIARES ---
+    private void trocarTela(String nomeCard) {
+        cardLayout.show(painelContentor, nomeCard);
+        painelContentor.revalidate();
+        painelContentor.repaint();
+    }
+
     private void iniciarPartidaSolo(int totalPares) {
         String nome = JOptionPane.showInputDialog(janelaMenuPrincipal,
                 "Digite seu nome para começar:",
@@ -223,10 +179,11 @@ public class NavegacaoController implements ActionListener {
             Tabuleiro tabuleiro = new Tabuleiro(totalPares, false);
             Jogador jogador = new Jogador(nome);
 
-            JanelaSinglePlayer jogo = new JanelaSinglePlayer(tabuleiro, jogador, this);
-            jogo.setVisible(true);
+            // Cria o painel do jogo, registra no CardLayout e exibe
+            painelJogoSingle = new JanelaSinglePlayer(tabuleiro, jogador, this);
+            painelContentor.add(painelJogoSingle, "JOGO_SINGLEPLAYER");
 
-            janelaMenuPrincipal.setVisible(false);
+            trocarTela("JOGO_SINGLEPLAYER");
         }
     }
 
@@ -237,7 +194,6 @@ public class NavegacaoController implements ActionListener {
                 JOptionPane.QUESTION_MESSAGE);
 
         if (nome1 != null && !nome1.trim().isEmpty()) {
-
             String nome2 = JOptionPane.showInputDialog(janelaMenuPrincipal,
                     "Digite o nome do Jogador 2:",
                     "Identificação do Jogador 2",
@@ -248,10 +204,31 @@ public class NavegacaoController implements ActionListener {
                 Jogador j1 = new Jogador(nome1);
                 Jogador j2 = new Jogador(nome2);
 
-                JanelaMultiplayer jogo = new JanelaMultiplayer(tabuleiro, j1, j2, this);
-                jogo.setVisible(true);
+                painelJogoMulti = new JanelaMultiplayer(tabuleiro, j1, j2, this);
+                painelContentor.add(painelJogoMulti, "JOGO_MULTIPLAYER");
 
-                janelaMenuPrincipal.setVisible(false);
+                trocarTela("JOGO_MULTIPLAYER");
+            }
+        }
+    }
+
+    public void solicitarVoltarAoMenu(Component telaAtual, Runnable acaoPausar, Runnable acaoRetomar) {
+        if (acaoPausar != null) {
+            acaoPausar.run();
+        }
+
+        int resposta = JOptionPane.showConfirmDialog(
+                telaAtual,
+                "Deseja realmente cancelar a partida e voltar ao menu?",
+                "Voltar ao Menu",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+        if (resposta == JOptionPane.YES_OPTION) {
+            trocarTela("MENU_PRINCIPAL");
+        } else {
+            if (acaoRetomar != null) {
+                acaoRetomar.run();
             }
         }
     }

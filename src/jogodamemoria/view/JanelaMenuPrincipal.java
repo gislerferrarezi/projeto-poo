@@ -3,6 +3,7 @@ package jogodamemoria.view;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.RoundRectangle2D;
 import javax.swing.*;
 
 public class JanelaMenuPrincipal extends JFrame {
@@ -11,145 +12,147 @@ public class JanelaMenuPrincipal extends JFrame {
     private JButton btnDoisJogadores;
     private JButton btnCreditos;
     private JButton btnSair;
-   
+
     private final Color COR_TITULO = new Color(0x2D1B4E); // Roxo escuro
     private final Color COR_SUBTITULO = new Color(0x3F2B68); // Roxo médio
     private final Color COR_BOTAO_PADRAO = new Color(0x5B4B9B); // Roxo do botão
     private final Color COR_BOTAO_HOVER = new Color(0x6D5CAE); // Roxo ao passar o mouse
     private final Color COR_BORDA_BOTAO = new Color(0x7F6FC0); // Borda do botão
 
+    // Variáveis de escala calculadas para 1280x720
+    private int larguraBotao = 350;
+    private int alturaBotao = 55;
+    private int tamanhoFonteBotao = 20;
+
     public JanelaMenuPrincipal() {
         setTitle("JOGO DA MEMÓRIA - UNESP");
-        setSize(1280, 800);
         this.setUndecorated(true);
-        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
+        Dimension tela = Toolkit.getDefaultToolkit().getScreenSize();
+        if (tela.width >= 1440 && tela.height >= 900) {
+            setSize(1440, 900); 
+        } else {
+            setSize(1280, 720); 
+        }
+        setLocationRelativeTo(null);
+        setLocationRelativeTo(null);
 
-        // Painel de fundo com a imagem
+        // Painel de fundo
         PainelFundo painelPrincipal = new PainelFundo();
-        painelPrincipal.setLayout(new GridBagLayout()); // Centraliza o painel do menu de forma simples
+        painelPrincipal.setLayout(new GridBagLayout());
         setContentPane(painelPrincipal);
 
         // ---------------- PAINEL DO MENU ----------------
         JPanel painelMenu = new JPanel();
-        painelMenu.setOpaque(false); // Deixa transparente para mostrar a foto do fundo
+        painelMenu.setOpaque(false);
         painelMenu.setLayout(new BoxLayout(painelMenu, BoxLayout.Y_AXIS));
 
         // 1. TÍTULOS
         JLabel lblTitulo = new JLabel("Campus.find()");
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 72));
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 65));
         lblTitulo.setForeground(COR_TITULO);
         lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Subtítulo principal centralizado com efeito de digitação
-        JLabel lblSubtitulo = new JLabel("");        
-        lblSubtitulo.setFont(new Font("Consolas", Font.BOLD, 32));
+        JLabel lblSubtitulo = new JLabel("");
+        lblSubtitulo.setFont(new Font("Consolas", Font.BOLD, 26));
         lblSubtitulo.setForeground(COR_SUBTITULO);
-        lblSubtitulo.setAlignmentX(Component.CENTER_ALIGNMENT);       
-        String[] textos = {"UNESP · Câmpus Bauru", "Desafie a sua mente!"};
+        lblSubtitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        String[] textos = { "UNESP · Câmpus Bauru", "Desafie a sua mente!" };
         new EfeitoDigitacao(lblSubtitulo, textos).iniciar();
 
-        // Linha Decorativa
         JLabel lblLinhaDecorativa = new JLabel("─────────  ✦  ─────────");
-        lblLinhaDecorativa.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 36));
+        lblLinhaDecorativa.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 30));
         lblLinhaDecorativa.setForeground(COR_SUBTITULO);
         lblLinhaDecorativa.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Adiciona os títulos no painel com espaçamento simples
+        // Adiciona títulos com espaçamento fixo proporcional
         painelMenu.add(lblTitulo);
         painelMenu.add(Box.createVerticalStrut(10));
         painelMenu.add(lblLinhaDecorativa);
-        painelMenu.add(Box.createVerticalStrut(20)); 
+        painelMenu.add(Box.createVerticalStrut(15));
         painelMenu.add(lblSubtitulo);
-        painelMenu.add(Box.createVerticalStrut(20)); // Espaço até os botões
+        painelMenu.add(Box.createVerticalStrut(30));
 
-        ImageIcon iconUmJogador = new ImageIcon(getClass().getResource("/jogodamemoria/recursos/imagens/user.png"));
-        ImageIcon iconDoisJogadores = new ImageIcon(
-                getClass().getResource("/jogodamemoria/recursos/imagens/users.png"));
-        ImageIcon iconCreditos = new ImageIcon(getClass().getResource("/jogodamemoria/recursos/imagens/star.png"));
-        ImageIcon iconSair = new ImageIcon(getClass().getResource("/jogodamemoria/recursos/imagens/exit-door.png"));
+        // 2. BOTÕES ARREDONDADOS
+        btnUmJogador = criarBotaoArredondado("Um Jogador");
+        btnDoisJogadores = criarBotaoArredondado("Dois Jogadores");
+        btnCreditos = criarBotaoArredondado("Créditos");
+        btnSair = criarBotaoArredondado("Sair");
 
-        btnUmJogador = criarBotaoBasico(iconUmJogador, "Um Jogador");
-        btnDoisJogadores = criarBotaoBasico(iconDoisJogadores, "Dois Jogadores");
-        btnCreditos = criarBotaoBasico(iconCreditos, "Créditos");
-        btnSair = criarBotaoBasico(iconSair, "Sair");
+        // Ação padrão para sair do jogo
+        btnSair.addActionListener(e -> System.exit(0));
 
+        int espacoEntreBotoes = 15;
         painelMenu.add(btnUmJogador);
-        painelMenu.add(Box.createVerticalStrut(20));
+        painelMenu.add(Box.createVerticalStrut(espacoEntreBotoes));
         painelMenu.add(btnDoisJogadores);
-        painelMenu.add(Box.createVerticalStrut(20));
+        painelMenu.add(Box.createVerticalStrut(espacoEntreBotoes));
         painelMenu.add(btnCreditos);
-        painelMenu.add(Box.createVerticalStrut(20));
+        painelMenu.add(Box.createVerticalStrut(espacoEntreBotoes));
         painelMenu.add(btnSair);
 
-        // Adiciona todo o menu dentro da tela
         painelPrincipal.add(painelMenu);
     }
 
-    // Método Final: Ícones redimensionados (26px), alinhados em coluna e texto centralizado
-    private JButton criarBotaoBasico(ImageIcon iconeOriginal, String texto) {
-        JButton botao = new JButton();
-        botao.setLayout(new BorderLayout());
+    // Criador de botões com renderização suavizada
+    private JButton criarBotaoArredondado(String texto) {
+        JButton botao = new JButton(texto) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // Área fixa reservada para a coluna de ícones (mantém o alinhamento vertical entre botões)
-        int LARGURA_AREA_ICONE = 60;
+                int raioArc = (int) (getHeight() * 0.35);
 
-        // 1. ESQUERDA: Ícone Redimensionado e Centralizado na sua caixinha
-        if (iconeOriginal != null) {
-            int tamanhoIcone = 26; // Tamanho ideal mantido
-            ImageIcon iconeAjustado = new ImageIcon(
-                    iconeOriginal.getImage().getScaledInstance(tamanhoIcone, tamanhoIcone, Image.SCALE_SMOOTH));
+                // Fundo arredondado
+                g2.setColor(getBackground());
+                g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), raioArc, raioArc));
 
-            JLabel lblIcone = new JLabel(iconeAjustado, SwingConstants.CENTER);
-            lblIcone.setPreferredSize(new Dimension(LARGURA_AREA_ICONE, 65));
-            botao.add(lblIcone, BorderLayout.WEST);
-        }
+                // Borda
+                g2.setColor(COR_BORDA_BOTAO);
+                g2.setStroke(new BasicStroke(2));
+                g2.draw(new RoundRectangle2D.Float(1, 1, getWidth() - 2, getHeight() - 2, raioArc, raioArc));
 
-        // 2. CENTRO: Texto do Botão (Centralizado no meio geométrico)
-        JLabel lblTexto = new JLabel(texto, SwingConstants.CENTER);
-        lblTexto.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblTexto.setForeground(Color.WHITE);
-        botao.add(lblTexto, BorderLayout.CENTER);
+                g2.dispose();
+                super.paintComponent(g);
+            }
+        };
 
-        // 3. DIREITA: Espaçador Invisível de Compensação
-        // Equilibra o peso do ícone da esquerda para o texto ficar 100% no meio
-        JPanel espacadorDireita = new JPanel();
-        espacadorDireita.setOpaque(false);
-        espacadorDireita.setPreferredSize(new Dimension(LARGURA_AREA_ICONE, 65));
-        botao.add(espacadorDireita, BorderLayout.EAST);
-
-        // --- Estilo e Cores ---
-        botao.setBackground(COR_BOTAO_PADRAO);
+        botao.setContentAreaFilled(false);
+        botao.setBorderPainted(false);
         botao.setFocusPainted(false);
+        botao.setOpaque(false);
+
+        botao.setFont(new Font("Segoe UI", Font.BOLD, tamanhoFonteBotao));
+        botao.setForeground(Color.WHITE);
+        botao.setHorizontalAlignment(SwingConstants.CENTER);
+        botao.setBackground(COR_BOTAO_PADRAO);
         botao.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // Tamanho do Botão
-        Dimension tamanho = new Dimension(420, 65);
+        Dimension tamanho = new Dimension(larguraBotao, alturaBotao);
         botao.setPreferredSize(tamanho);
         botao.setMaximumSize(tamanho);
         botao.setMinimumSize(tamanho);
         botao.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Borda
-        botao.setBorder(BorderFactory.createLineBorder(COR_BORDA_BOTAO, 2));
-
-        // Hover
         botao.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
                 botao.setBackground(COR_BOTAO_HOVER);
+                botao.repaint();
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 botao.setBackground(COR_BOTAO_PADRAO);
+                botao.repaint();
             }
         });
 
         return botao;
     }
 
-    // Painel básico para desenhar a imagem de fundo
     class PainelFundo extends JPanel {
         private Image imagem;
 

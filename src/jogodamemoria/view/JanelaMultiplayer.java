@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.awt.Font;
+import java.awt.event.KeyEvent;
 
 import javax.swing.*;
 import jogodamemoria.model.Tabuleiro;
@@ -16,7 +17,7 @@ import jogodamemoria.model.Jogador;
 import jogodamemoria.controller.JogoController;
 import jogodamemoria.controller.NavegacaoController;
 
-public class JanelaMultiplayer extends JFrame implements ActionListener {
+public class JanelaMultiplayer extends JPanel implements ActionListener {
 
     private Tabuleiro tabuleiro;
     private Jogador jogador1;
@@ -44,10 +45,9 @@ public class JanelaMultiplayer extends JFrame implements ActionListener {
 
         this.gerenciador = new JogoController(tabuleiro, jogador1, jogador2);
 
-        setTitle("Jogo da Memória - Modo Multiplayer");
-        setSize(1280, 800);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        // 2. ALTERAÇÃO AQUI: Métodos setTitle, setSize, setDefaultCloseOperation e
+        // setLocationRelativeTo removidos!
+
         setLayout(new BorderLayout(10, 10));
 
         // Configuração de linhas e colunas
@@ -101,24 +101,39 @@ public class JanelaMultiplayer extends JFrame implements ActionListener {
         painelJogador2.add(lblTempoJ2);
 
         add(painelJogador2, BorderLayout.SOUTH);
-
-        // --- CONFIGURAÇÃO DO CRONÔMETRO ---
+        
         gerenciador.configurarCallbacksCronometro(
-                () -> { // Ação do Tick
+                () -> SwingUtilities.invokeLater(() -> {
                     lblTempoJ1.setText("Tempo: " + gerenciador.getTempoRestanteJ1() + "s");
                     lblTempoJ2.setText("Tempo: " + gerenciador.getTempoRestanteJ2() + "s");
-                },
-                () -> { // Ação do Timeout
+                }),
+                () -> SwingUtilities.invokeLater(() -> {
+                    // Força imediatamente o texto para 0s na interface antes de travar o tabuleiro
+                    lblTempoJ1.setText("Tempo: 0s");
+                    lblTempoJ2.setText("Tempo: 0s");
+
                     tabuleiroBloqueado = true;
-                    JOptionPane.showMessageDialog(this, "Tempo esgotado! Passou a vez.", "Alerta",
-                            JOptionPane.WARNING_MESSAGE);
-                    sincronizarCartasVisuais();
-                    atualizarHUD();
-                    tabuleiroBloqueado = false;
-                    gerenciador.iniciarCronometro();
-                });
+
+                    // Um pequeno atraso (200ms) para o painel atualizar visualmente e mostrar o
+                    // "0s" para o usuário
+                    Timer delayVisual = new Timer(200, evento -> {
+                        JOptionPane.showMessageDialog(JanelaMultiplayer.this,
+                                "Tempo esgotado! Sua vez passou.",
+                                "Atenção",
+                                JOptionPane.WARNING_MESSAGE);
+
+                        sincronizarCartasVisuais();
+                        atualizarHUD();
+                        tabuleiroBloqueado = false;
+                        gerenciador.iniciarCronometro();
+                    });
+                    delayVisual.setRepeats(false);
+                    delayVisual.start();
+                }));
         atualizarHUD();
         gerenciador.iniciarCronometro();
+
+        configurarBotaoEsc();
     }
 
     private void atualizarHUD() {
@@ -147,6 +162,24 @@ public class JanelaMultiplayer extends JFrame implements ActionListener {
         }
     }
 
+    private void configurarBotaoEsc() {
+        InputMap inputMap = this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = this.getActionMap();
+
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "acaoEsc");
+
+        actionMap.put("acaoEsc", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                navegacaoController.solicitarVoltarAoMenu(
+                        JanelaMultiplayer.this,
+                        () -> gerenciador.pararCronometro(), // Como pausar
+                        () -> gerenciador.iniciarCronometro() // Como retomar
+                );
+            }
+        });
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (tabuleiroBloqueado)
@@ -164,13 +197,6 @@ public class JanelaMultiplayer extends JFrame implements ActionListener {
 
                     case ACERTOU_PAR:
                         botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());
-                        gerenciador.resetarCronometro();
-                        atualizarHUD();
-                        break;
-
-                    case EFEITO_ESPECIAL_ATIVADO:                        
-                        botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());                       
-                        sincronizarCartasVisuais();
                         gerenciador.resetarCronometro();
                         atualizarHUD();
                         break;
@@ -193,14 +219,37 @@ public class JanelaMultiplayer extends JFrame implements ActionListener {
                         botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());
                         tabuleiroBloqueado = true;
 
-                        Timer timerPunicao = new Timer(1500, evento -> {
-                            sincronizarCartasVisuais();
-                            tabuleiroBloqueado = false;
-                            gerenciador.resetarCronometro();
-                            atualizarHUD();
-                        });
-                        timerPunicao.setRepeats(false);
-                        timerPunicao.start();
+                        JOptionPane.showMessageDialog(this,
+                                "Oops! Carta de Punição: Você perdeu a vez!",
+                                "Efeito Especial", JOptionPane.ERROR_MESSAGE);
+
+                        sincronizarCartasVisuais();
+                        atualizarHUD();
+                        tabuleiroBloqueado = false;
+                        gerenciador.resetarCronometro();
+                        break;
+
+                    case JOGUE_DE_NOVO_ATIVADO:
+                        botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());
+                        tabuleiroBloqueado = true;
+
+                        JOptionPane.showMessageDialog(this,
+                                "Boa! Carta Bônus: Jogue de novo!",
+                                "Efeito Especial", JOptionPane.INFORMATION_MESSAGE);
+
+                        tabuleiroBloqueado = false;
+                        // Mantém o turno e o cronômetro rodando para o mesmo jogador
+                        break;
+
+                    case DOBRO_PONTOS_ATIVADO:
+                        botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());
+                        tabuleiroBloqueado = true;
+
+                        JOptionPane.showMessageDialog(this,
+                                "Incrível! Carta de Pontuação Dobrada neste turno!",
+                                "Efeito Especial", JOptionPane.INFORMATION_MESSAGE);
+
+                        tabuleiroBloqueado = false;
                         break;
 
                     case VITORIA:

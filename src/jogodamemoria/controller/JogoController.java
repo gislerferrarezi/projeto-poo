@@ -27,8 +27,8 @@ public class JogoController {
     private int tempoRestanteJ1 = 30;
     private int tempoRestanteJ2 = 30;
     private boolean jogadorGanhouBonusTurno = false;
-    private Runnable onTickCallback; // Permite que a View atualize o texto do contador de segundos
-    private Runnable onTimeoutCallback; // Permite que a View atualize a tela quando o tempo esgotar
+    private Runnable onTickCallback; 
+    private Runnable onTimeoutCallback; 
 
     public enum ResultadoJogada {
         IGNORAR,
@@ -36,7 +36,8 @@ public class JogoController {
         ACERTOU_PAR,
         ERROU_PAR,
         PERDEU_A_VEZ,
-        EFEITO_ESPECIAL_ATIVADO,
+        JOGUE_DE_NOVO_ATIVADO,
+        DOBRO_PONTOS_ATIVADO,
         VITORIA
     }
 
@@ -54,7 +55,6 @@ public class JogoController {
         this.jogador2 = jogador2;
         int cartasNormais = 0;
         for (int i = 0; i < tabuleiro.getTamanho(); i++) {
-            // Conta APENAS as cartas normais para formar os pares
             if (tabuleiro.getCarta(i).getTipo() == Tipo_Carta.NORMAL) {
                 cartasNormais++;
             }
@@ -76,7 +76,6 @@ public class JogoController {
             cartaClicada.virar();
             cartaClicada.setDescoberta(true);
             
-            // Aplica os efeitos na hora
             switch (cartaClicada.getTipo()) {
                 case PERDEU_A_VEZ:
                     if (primeiraCarta != null) {
@@ -89,25 +88,25 @@ public class JogoController {
 
                 case JOGUE_DE_NOVO:
                     jogadorGanhouBonusTurno = true;
-                    return ResultadoJogada.EFEITO_ESPECIAL_ATIVADO;
+                    return ResultadoJogada.JOGUE_DE_NOVO_ATIVADO;
 
                 case DOBRO_PONTOS:
                     multiplicadorPontos = multiplicadorPontos * 2;
-                    return ResultadoJogada.EFEITO_ESPECIAL_ATIVADO;
+                    return ResultadoJogada.DOBRO_PONTOS_ATIVADO;
 
                 default:
                     return ResultadoJogada.IGNORAR;
             }
         }
 
-        // --- CONTROLE DO PRIMEIRO CLIQUE (Apenas Cartas Normais chegam aqui) ---
+        // --- CONTROLE DO PRIMEIRO CLIQUE (Cartas Normais) ---
         if (primeiraCarta == null) {
             primeiraCarta = cartaClicada;
             primeiraCarta.virar();
             return ResultadoJogada.PRIMEIRA_CARTA_VIRADA;
         }
 
-        // --- CONTROLE DO SEGUNDO CLIQUE (Apenas Cartas Normais) ---
+        // --- CONTROLE DO SEGUNDO CLIQUE (Cartas Normais) ---
         if (segundaCarta == null && cartaClicada != primeiraCarta) {
             segundaCarta = cartaClicada;
             segundaCarta.virar();
@@ -115,7 +114,6 @@ public class JogoController {
 
             pararCronometro();
 
-            // Verifica se formou par
             if (primeiraCarta.getId() == segundaCarta.getId()) {
                 primeiraCarta.setDescoberta(true);
                 segundaCarta.setDescoberta(true);
@@ -135,13 +133,11 @@ public class JogoController {
                         jogador.ganharPonto();
                 }
                 multiplicadorPontos = 1;
-
                 totalParesFormados++;
 
                 primeiraCarta = null;
                 segundaCarta = null;
 
-                // Verifica vitória
                 if (totalParesFormados == totalParesObjetivo) {
                     return ResultadoJogada.VITORIA;
                 }
@@ -149,7 +145,6 @@ public class JogoController {
                 return ResultadoJogada.ACERTOU_PAR;
 
             } else {
-                // Errou o par
                 primeiraCarta.esconder();
                 segundaCarta.esconder();
 
@@ -207,10 +202,7 @@ public class JogoController {
             segundaCarta = null;
         }
 
-        // Alterna o jogador
         jogadorAtual = (jogadorAtual == 0) ? 1 : 0;
-
-        // Reseta os dois relógios internos para 30
         tempoRestanteJ1 = 30;
         tempoRestanteJ2 = 30;
 
