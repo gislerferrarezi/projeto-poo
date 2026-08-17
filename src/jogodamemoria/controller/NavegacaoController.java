@@ -24,7 +24,7 @@ public class NavegacaoController implements ActionListener {
     private JanelaMenuMultiplayer janelaMenuMultiplayer;
     private JanelaCreditos janelaCreditos;
 
-    // Painéis das partidas (agora estendem JPanel)
+    // Painéis das partidas
     private JanelaSinglePlayer painelJogoSingle;
     private JanelaMultiplayer painelJogoMulti;
 
@@ -63,8 +63,10 @@ public class NavegacaoController implements ActionListener {
         this.janelaMenuSinglePlayer.getBtnJogarFacil().addActionListener(this);
         this.janelaMenuSinglePlayer.getBtnJogarPadrao().addActionListener(this);
 
+        // Listeners do Menu Multiplayer
         this.janelaMenuMultiplayer.getBtnVoltar().addActionListener(this);
-        this.janelaMenuMultiplayer.getBtnJogar().addActionListener(this);
+        this.janelaMenuMultiplayer.getBtnMultiplayerLocal().addActionListener(this);
+        this.janelaMenuMultiplayer.getBtnMultiplayerOnline().addActionListener(this);
 
         this.janelaCreditos.getBtnVoltar().addActionListener(this);
     }
@@ -72,7 +74,6 @@ public class NavegacaoController implements ActionListener {
     // --- MÉTODOS DE EXIBIR POPUP DE VITÓRIA ---
     public void exibirVitoria(JanelaSinglePlayer janelaJogo, int tentativas, String tempo, Jogador jogador,
             Tabuleiro tabuleiro) {
-        // Passa a janelaMenuPrincipal como pai do modal (JDialog)
         this.janelaVitoriaSingle = new JanelaVitoriaSingle(janelaMenuPrincipal, tentativas, tempo, jogador, tabuleiro);
         this.janelaVitoriaSingle.getBtnMenu().addActionListener(this);
         this.janelaVitoriaSingle.getBtnJogarNovamente().addActionListener(this);
@@ -91,45 +92,67 @@ public class NavegacaoController implements ActionListener {
     // --- EVENTOS DE CLIQUE ---
     @Override
     public void actionPerformed(ActionEvent e) {
+        Object fonte = e.getSource();
+
         // 1. CLIQUES DO MENU PRINCIPAL
-        if (e.getSource() == janelaMenuPrincipal.getBtnUmJogador()) {
+        if (fonte == janelaMenuPrincipal.getBtnUmJogador()) {
+            AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
+
+            
             trocarTela("MENU_SINGLEPLAYER");
-        } else if (e.getSource() == janelaMenuPrincipal.getBtnDoisJogadores()) {
+        } else if (fonte == janelaMenuPrincipal.getBtnDoisJogadores()) {
+            AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
             trocarTela("MENU_MULTIPLAYER");
-        } else if (e.getSource() == janelaMenuPrincipal.getBtnCreditos()) {
+        } else if (fonte == janelaMenuPrincipal.getBtnCreditos()) {
+            AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
             trocarTela("CREDITOS");
-        } else if (e.getSource() == janelaMenuPrincipal.getBtnSair()) {
+        } else if (fonte == janelaMenuPrincipal.getBtnSair()) {
+            AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
             System.exit(0);
         }
 
         // 2. CLIQUES DO MENU SINGLEPLAYER
-        else if (e.getSource() == janelaMenuSinglePlayer.getBtnVoltar()) {
+        else if (fonte == janelaMenuSinglePlayer.getBtnVoltar()) {
+            AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
             trocarTela("MENU_PRINCIPAL");
-        } else if (e.getSource() == janelaMenuSinglePlayer.getBtnJogarFacil()) {
-            iniciarPartidaSolo(6);
-        } else if (e.getSource() == janelaMenuSinglePlayer.getBtnJogarPadrao()) {
-            iniciarPartidaSolo(12);
+        } else if (fonte == janelaMenuSinglePlayer.getBtnJogarFacil()) {
+            AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
+            iniciarPartidaSolo(6);          
+        } else if (fonte == janelaMenuSinglePlayer.getBtnJogarPadrao()) {
+            AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
+            iniciarPartidaSolo(12);          
         }
 
         // 3. CLIQUES DO MENU MULTIPLAYER
-        else if (e.getSource() == janelaMenuMultiplayer.getBtnVoltar()) {
+        else if (fonte == janelaMenuMultiplayer.getBtnVoltar()) {
+            AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
             trocarTela("MENU_PRINCIPAL");
-        } else if (e.getSource() == janelaMenuMultiplayer.getBtnJogar()) {
+        } else if (fonte == janelaMenuMultiplayer.getBtnMultiplayerLocal()) {
+            AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
             iniciarPartidaMultiplayer(12);
+        } else if (fonte == janelaMenuMultiplayer.getBtnMultiplayerOnline()) {
+            AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
+            JOptionPane.showMessageDialog(janelaMenuPrincipal,
+                    "O modo Multiplayer Online estará disponível em breve!",
+                    "Em Desenvolvimento",
+                    JOptionPane.INFORMATION_MESSAGE);
         }
 
         // 4. CLIQUES DA JANELA CREDITOS
-        else if (e.getSource() == janelaCreditos.getBtnVoltar()) {
+        else if (fonte == janelaCreditos.getBtnVoltar()) {
+            AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
             trocarTela("MENU_PRINCIPAL");
         }
 
         // 5. CLIQUES DA JANELA DE VITÓRIA SINGLE (POPUP)
         if (janelaVitoriaSingle != null) {
-            if (e.getSource() == janelaVitoriaSingle.getBtnMenu()) {
+            if (fonte == janelaVitoriaSingle.getBtnMenu()) {
+                AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
                 janelaVitoriaSingle.dispose();
                 janelaVitoriaSingle = null;
                 trocarTela("MENU_PRINCIPAL");
-            } else if (e.getSource() == janelaVitoriaSingle.getBtnJogarNovamente()) {
+            } else if (fonte == janelaVitoriaSingle.getBtnJogarNovamente()) {
+                AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
                 janelaVitoriaSingle.dispose();
                 janelaVitoriaSingle = null;
                 if (painelJogoSingle != null) {
@@ -140,17 +163,18 @@ public class NavegacaoController implements ActionListener {
 
         // 6. CLIQUES DA JANELA DE VITÓRIA MULTIPLAYER (POPUP)
         if (janelaVitoriaMultiplayer != null) {
-            if (e.getSource() == janelaVitoriaMultiplayer.getBtnMenu()) {
+            if (fonte == janelaVitoriaMultiplayer.getBtnMenu()) {
+                AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
                 janelaVitoriaMultiplayer.dispose();
                 janelaVitoriaMultiplayer = null;
                 trocarTela("MENU_PRINCIPAL");
-            } else if (e.getSource() == janelaVitoriaMultiplayer.getBtnJogarNovamente()) {
+            } else if (fonte == janelaVitoriaMultiplayer.getBtnJogarNovamente()) {
+                AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
                 String nome1 = janelaVitoriaMultiplayer.getJogador1().getNome();
                 String nome2 = janelaVitoriaMultiplayer.getJogador2().getNome();
                 janelaVitoriaMultiplayer.dispose();
                 janelaVitoriaMultiplayer = null;
 
-                // Reinicia a partida multiplayer recriando o painel
                 Tabuleiro novoTabuleiro = new Tabuleiro(12, true);
                 Jogador j1 = new Jogador(nome1);
                 Jogador j2 = new Jogador(nome2);
@@ -179,7 +203,6 @@ public class NavegacaoController implements ActionListener {
             Tabuleiro tabuleiro = new Tabuleiro(totalPares, false);
             Jogador jogador = new Jogador(nome);
 
-            // Cria o painel do jogo, registra no CardLayout e exibe
             painelJogoSingle = new JanelaSinglePlayer(tabuleiro, jogador, this);
             painelContentor.add(painelJogoSingle, "JOGO_SINGLEPLAYER");
 

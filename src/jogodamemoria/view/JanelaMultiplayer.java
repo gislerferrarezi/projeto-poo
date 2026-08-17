@@ -14,6 +14,7 @@ import javax.swing.*;
 import jogodamemoria.model.Tabuleiro;
 import jogodamemoria.model.Carta;
 import jogodamemoria.model.Jogador;
+import jogodamemoria.controller.AudioController;
 import jogodamemoria.controller.JogoController;
 import jogodamemoria.controller.NavegacaoController;
 
@@ -101,7 +102,7 @@ public class JanelaMultiplayer extends JPanel implements ActionListener {
         painelJogador2.add(lblTempoJ2);
 
         add(painelJogador2, BorderLayout.SOUTH);
-        
+
         gerenciador.configurarCallbacksCronometro(
                 () -> SwingUtilities.invokeLater(() -> {
                     lblTempoJ1.setText("Tempo: " + gerenciador.getTempoRestanteJ1() + "s");
@@ -196,6 +197,7 @@ public class JanelaMultiplayer extends JPanel implements ActionListener {
                         break;
 
                     case ACERTOU_PAR:
+                        AudioController.tocarEfeito("/jogodamemoria/recursos/sons/acerto.wav");
                         botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());
                         gerenciador.resetarCronometro();
                         atualizarHUD();
@@ -256,7 +258,7 @@ public class JanelaMultiplayer extends JPanel implements ActionListener {
                         gerenciador.pararCronometro();
                         botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());
                         atualizarHUD();
-
+                        AudioController.tocarEfeito("/jogodamemoria/recursos/sons/vitoria.wav");
                         Jogador vencedor = gerenciador.compararPontos(jogador1, jogador2);
                         navegacaoController.exibirVitoriaMultiplayer(this, vencedor, jogador1, jogador2);
                         break;

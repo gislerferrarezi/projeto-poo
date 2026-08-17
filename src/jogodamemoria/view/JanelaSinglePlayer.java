@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.*;
 import jogodamemoria.model.Tabuleiro;
 import jogodamemoria.model.Jogador;
+import jogodamemoria.controller.AudioController;
 import jogodamemoria.controller.JogoController;
 import jogodamemoria.controller.JogoController.ResultadoJogada;
 import jogodamemoria.controller.NavegacaoController;
@@ -108,7 +109,7 @@ public class JanelaSinglePlayer extends JPanel implements ActionListener {
 
         cronometro.start();
 
-        configurarBotaoEsc();   
+        configurarBotaoEsc();
     }
 
     public void reiniciarJogo() {
@@ -177,6 +178,7 @@ public class JanelaSinglePlayer extends JPanel implements ActionListener {
                         break;
 
                     case ACERTOU_PAR:
+                        AudioController.tocarEfeito("/jogodamemoria/recursos/sons/acerto.wav");
                         botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());
                         lblPontos.setText("Pares Feitos: " + jogador.getPontuacao());
                         indexPrimeiraCarta = -1;
@@ -199,10 +201,11 @@ public class JanelaSinglePlayer extends JPanel implements ActionListener {
                         break;
 
                     case VITORIA:
+
                         botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());
                         lblPontos.setText("Pares Feitos: " + jogador.getPontuacao());
                         cronometro.stop();
-
+                        AudioController.tocarEfeito("/jogodamemoria/recursos/sons/vitoria.wav");
                         navegacaoController.exibirVitoria(this, gerenciador.getTentativas(), lblTempo.getText(),
                                 jogador, tabuleiro);
                         break;

@@ -39,7 +39,7 @@ public class JanelaMenuPrincipal extends JFrame {
         titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // LINHA
-        JLabel linha = new JLabel("────────────  ✦  ────────────");
+        JLabel linha = new JLabel("✦  ────────────  ✦  ────────────  ✦"); 
         linha.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 23));
         linha.setForeground(TEXTO);
         linha.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -123,7 +123,7 @@ public class JanelaMenuPrincipal extends JFrame {
         );
 
         card.add(menu);
-        fundo.add(card);
+        fundo.add(card);       
     }
 
     private JButton criarBotao(String texto) {
