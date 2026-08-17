@@ -58,6 +58,7 @@ public class NavegacaoController implements ActionListener {
         this.janelaMenuPrincipal.getBtnDoisJogadores().addActionListener(this);
         this.janelaMenuPrincipal.getBtnCreditos().addActionListener(this);
         this.janelaMenuPrincipal.getBtnSair().addActionListener(this);
+        this.janelaMenuPrincipal.getBtnSom().addActionListener(this); // <- Listener do Botão de Som
 
         this.janelaMenuSinglePlayer.getBtnVoltar().addActionListener(this);
         this.janelaMenuSinglePlayer.getBtnJogarFacil().addActionListener(this);
@@ -97,8 +98,6 @@ public class NavegacaoController implements ActionListener {
         // 1. CLIQUES DO MENU PRINCIPAL
         if (fonte == janelaMenuPrincipal.getBtnUmJogador()) {
             AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
-
-            
             trocarTela("MENU_SINGLEPLAYER");
         } else if (fonte == janelaMenuPrincipal.getBtnDoisJogadores()) {
             AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
@@ -109,6 +108,15 @@ public class NavegacaoController implements ActionListener {
         } else if (fonte == janelaMenuPrincipal.getBtnSair()) {
             AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
             System.exit(0);
+        } else if (fonte == janelaMenuPrincipal.getBtnSom()) {
+            AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
+            
+            // Alterna o estado global do som
+            boolean novoEstado = !AudioController.isSomAtivado();
+            AudioController.setSomAtivado(novoEstado);
+            
+            // Atualiza a imagem do botão na interface
+            janelaMenuPrincipal.atualizarIconeSomBotao(novoEstado);
         }
 
         // 2. CLIQUES DO MENU SINGLEPLAYER

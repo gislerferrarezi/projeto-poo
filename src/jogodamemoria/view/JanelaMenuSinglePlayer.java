@@ -40,7 +40,7 @@ public class JanelaMenuSinglePlayer extends JPanel {
         + "</div></html>";
 
     public JanelaMenuSinglePlayer() {
-        var url = JanelaMenuPrincipal.class.getResource("/jogodamemoria/recursos/imagens/fundo1.png");
+        var url = JanelaMenuPrincipal.class.getResource("/jogodamemoria/recursos/imagens/fundo.png");
         if (url != null) {
             imagemFundo = new ImageIcon(url).getImage();
         }

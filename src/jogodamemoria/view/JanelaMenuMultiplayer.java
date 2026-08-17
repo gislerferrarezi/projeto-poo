@@ -20,7 +20,7 @@ public class JanelaMenuMultiplayer extends JPanel {
     private final Color FUNDO_INTERNO = new Color(255, 255, 255, 35);
 
     public JanelaMenuMultiplayer() {
-        var url = JanelaMenuPrincipal.class.getResource("/jogodamemoria/recursos/imagens/fundo1.png");
+        var url = JanelaMenuPrincipal.class.getResource("/jogodamemoria/recursos/imagens/fundo.png");
         if (url != null) {
             imagemFundo = new ImageIcon(url).getImage();
         }
