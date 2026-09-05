@@ -18,39 +18,53 @@ public class Tabuleiro {
     }
 
     private void inicializarTabuleiro() {
-        if (!isMultiplayer) {
-            // --- MODO SOLO ---
+        if (!isMultiplayer) {            
             for (int i = 1; i <= totalPares; i++) {
                 String valorCarta = "" + i;
                 cartas.add(new Carta(i, valorCarta));
                 cartas.add(new Carta(i, valorCarta));
             }
-        } else {            
-            int j = 1;            
+        } else {
+            int j = 1;
             for (int i = 1; i <= (totalPares); i++) {
-                String valorCarta =  "" + j;
+                String valorCarta = "" + j;
                 cartas.add(new Carta(j, valorCarta));
                 cartas.add(new Carta(j, valorCarta));
-                j++; 
-            }                
+                j++;
+            }
             String valorPerdeu1 = "Perdeu_A_Vez_1";
             cartas.add(new Carta(j, valorPerdeu1, Carta.Tipo_Carta.PERDEU_A_VEZ));
-            j++; 
-            
+            j++;
+
             String valorPerdeu2 = "Perdeu_A_Vez_2";
             cartas.add(new Carta(j, valorPerdeu2, Carta.Tipo_Carta.PERDEU_A_VEZ));
-            j++; 
-            
+            j++;
+
             String valorDeNovo = "Jogue_De_Novo";
             cartas.add(new Carta(j, valorDeNovo, Carta.Tipo_Carta.JOGUE_DE_NOVO));
             cartas.add(new Carta(j, valorDeNovo, Carta.Tipo_Carta.JOGUE_DE_NOVO));
-            j++; 
-            
+            j++;
+
             String valorDobro = "Dobro_Pontos";
             cartas.add(new Carta(j, valorDobro, Carta.Tipo_Carta.DOBRO_PONTOS));
             cartas.add(new Carta(j, valorDobro, Carta.Tipo_Carta.DOBRO_PONTOS));
-        }        
+        }
+
         Collections.shuffle(cartas);
+
+        // GABARITO FORMATADO EM GRID 
+        imprimirGabaritoGrid();
+    }
+
+    private void imprimirGabaritoGrid() {
+        int totalCartas = cartas.size();        
+        int colunas = (totalCartas % 4 == 0) ? 4 : 6;      
+        for (int i = 0; i < totalCartas; i++) {
+            System.out.printf("[%-12s] ", cartas.get(i).getValor());           
+            if ((i + 1) % colunas == 0) {
+                System.out.println();
+            }
+        }        
     }
 
     public Carta getCarta(int indice) {

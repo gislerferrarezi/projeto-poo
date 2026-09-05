@@ -1,10 +1,10 @@
 package jogodamemoria.controller;
 
 import java.awt.CardLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-import java.awt.Component;
 
 import jogodamemoria.model.Jogador;
 import jogodamemoria.model.Tabuleiro;
@@ -24,7 +24,6 @@ public class NavegacaoController implements ActionListener {
     private JanelaMenuMultiplayer janelaMenuMultiplayer;
     private JanelaCreditos janelaCreditos;
 
-    // Painéis das partidas
     private JanelaSinglePlayer painelJogoSingle;
     private JanelaMultiplayer painelJogoMulti;
 
@@ -44,7 +43,6 @@ public class NavegacaoController implements ActionListener {
 
         JPanel painelInicio = (JPanel) menuPrincipal.getContentPane();
 
-        // Registra as telas estáticas no CardLayout
         this.painelContentor.add(painelInicio, "MENU_PRINCIPAL");
         this.painelContentor.add(janelaMenuSinglePlayer, "MENU_SINGLEPLAYER");
         this.painelContentor.add(janelaMenuMultiplayer, "MENU_MULTIPLAYER");
@@ -53,26 +51,27 @@ public class NavegacaoController implements ActionListener {
         menuPrincipal.setContentPane(painelContentor);
         cardLayout.show(painelContentor, "MENU_PRINCIPAL");
 
-        // Listeners dos Menus
         this.janelaMenuPrincipal.getBtnUmJogador().addActionListener(this);
         this.janelaMenuPrincipal.getBtnDoisJogadores().addActionListener(this);
         this.janelaMenuPrincipal.getBtnCreditos().addActionListener(this);
         this.janelaMenuPrincipal.getBtnSair().addActionListener(this);
-        this.janelaMenuPrincipal.getBtnSom().addActionListener(this); // <- Listener do Botão de Som
+        this.janelaMenuPrincipal.getBtnSom().addActionListener(this);
 
         this.janelaMenuSinglePlayer.getBtnVoltar().addActionListener(this);
         this.janelaMenuSinglePlayer.getBtnJogarFacil().addActionListener(this);
         this.janelaMenuSinglePlayer.getBtnJogarPadrao().addActionListener(this);
 
-        // Listeners do Menu Multiplayer
         this.janelaMenuMultiplayer.getBtnVoltar().addActionListener(this);
         this.janelaMenuMultiplayer.getBtnMultiplayerLocal().addActionListener(this);
-        this.janelaMenuMultiplayer.getBtnMultiplayerOnline().addActionListener(this);
 
         this.janelaCreditos.getBtnVoltar().addActionListener(this);
     }
 
-    // --- MÉTODOS DE EXIBIR POPUP DE VITÓRIA ---
+    public void iniciar() {
+        AudioController.tocarMusicaFundo("/jogodamemoria/recursos/sons/musica_fundo.wav");
+        janelaMenuPrincipal.setVisible(true);
+    }
+
     public void exibirVitoria(JanelaSinglePlayer janelaJogo, int tentativas, String tempo, Jogador jogador,
             Tabuleiro tabuleiro) {
         this.janelaVitoriaSingle = new JanelaVitoriaSingle(janelaMenuPrincipal, tentativas, tempo, jogador, tabuleiro);
@@ -82,20 +81,43 @@ public class NavegacaoController implements ActionListener {
     }
 
     public void exibirVitoriaMultiplayer(JanelaMultiplayer janelaJogo, Jogador vencedor, Jogador jogador1,
-            Jogador jogador2) {
-        this.janelaVitoriaMultiplayer = new JanelaVitoriaMultiplayer(janelaMenuPrincipal, vencedor, jogador1, jogador2,
-                null);
+            Jogador jogador2, int paresJogador1, int paresJogador2, Tabuleiro tabuleiro) {
+
+        this.painelJogoMulti = janelaJogo;
+        this.janelaVitoriaMultiplayer = new JanelaVitoriaMultiplayer(
+                janelaMenuPrincipal, vencedor, jogador1, jogador2, tabuleiro);
+
         this.janelaVitoriaMultiplayer.getBtnMenu().addActionListener(this);
         this.janelaVitoriaMultiplayer.getBtnJogarNovamente().addActionListener(this);
         this.janelaVitoriaMultiplayer.setVisible(true);
     }
 
-    // --- EVENTOS DE CLIQUE ---
+    public void voltarAoMenuPrincipal() {
+        trocarTela("MENU_PRINCIPAL");
+    }
+
+    public void solicitarVoltarAoMenu(Component telaAtual, Runnable acaoPausar, Runnable acaoRetomar) {
+        if (acaoPausar != null)
+            acaoPausar.run();
+
+        int resposta = JOptionPane.showConfirmDialog(
+                telaAtual,
+                "Deseja realmente cancelar a partida e voltar ao menu?",
+                "Voltar ao Menu",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+        if (resposta == JOptionPane.YES_OPTION) {
+            trocarTela("MENU_PRINCIPAL");
+        } else if (acaoRetomar != null) {
+            acaoRetomar.run();
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         Object fonte = e.getSource();
 
-        // 1. CLIQUES DO MENU PRINCIPAL
         if (fonte == janelaMenuPrincipal.getBtnUmJogador()) {
             AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
             trocarTela("MENU_SINGLEPLAYER");
@@ -110,49 +132,35 @@ public class NavegacaoController implements ActionListener {
             System.exit(0);
         } else if (fonte == janelaMenuPrincipal.getBtnSom()) {
             AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
-            
-            // Alterna o estado global do som
             boolean novoEstado = !AudioController.isSomAtivado();
             AudioController.setSomAtivado(novoEstado);
-            
-            // Atualiza a imagem do botão na interface
             janelaMenuPrincipal.atualizarIconeSomBotao(novoEstado);
         }
 
-        // 2. CLIQUES DO MENU SINGLEPLAYER
         else if (fonte == janelaMenuSinglePlayer.getBtnVoltar()) {
             AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
             trocarTela("MENU_PRINCIPAL");
         } else if (fonte == janelaMenuSinglePlayer.getBtnJogarFacil()) {
             AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
-            iniciarPartidaSolo(6);          
+            iniciarPartidaSolo(6);
         } else if (fonte == janelaMenuSinglePlayer.getBtnJogarPadrao()) {
             AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
-            iniciarPartidaSolo(12);          
+            iniciarPartidaSolo(12);
         }
 
-        // 3. CLIQUES DO MENU MULTIPLAYER
         else if (fonte == janelaMenuMultiplayer.getBtnVoltar()) {
             AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
             trocarTela("MENU_PRINCIPAL");
         } else if (fonte == janelaMenuMultiplayer.getBtnMultiplayerLocal()) {
             AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
             iniciarPartidaMultiplayer(12);
-        } else if (fonte == janelaMenuMultiplayer.getBtnMultiplayerOnline()) {
-            AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
-            JOptionPane.showMessageDialog(janelaMenuPrincipal,
-                    "O modo Multiplayer Online estará disponível em breve!",
-                    "Em Desenvolvimento",
-                    JOptionPane.INFORMATION_MESSAGE);
         }
 
-        // 4. CLIQUES DA JANELA CREDITOS
         else if (fonte == janelaCreditos.getBtnVoltar()) {
             AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
             trocarTela("MENU_PRINCIPAL");
         }
 
-        // 5. CLIQUES DA JANELA DE VITÓRIA SINGLE (POPUP)
         if (janelaVitoriaSingle != null) {
             if (fonte == janelaVitoriaSingle.getBtnMenu()) {
                 AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
@@ -169,7 +177,6 @@ public class NavegacaoController implements ActionListener {
             }
         }
 
-        // 6. CLIQUES DA JANELA DE VITÓRIA MULTIPLAYER (POPUP)
         if (janelaVitoriaMultiplayer != null) {
             if (fonte == janelaVitoriaMultiplayer.getBtnMenu()) {
                 AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
@@ -180,8 +187,13 @@ public class NavegacaoController implements ActionListener {
                 AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
                 String nome1 = janelaVitoriaMultiplayer.getJogador1().getNome();
                 String nome2 = janelaVitoriaMultiplayer.getJogador2().getNome();
+
                 janelaVitoriaMultiplayer.dispose();
                 janelaVitoriaMultiplayer = null;
+
+                if (painelJogoMulti != null) {
+                    painelContentor.remove(painelJogoMulti);
+                }
 
                 Tabuleiro novoTabuleiro = new Tabuleiro(12, true);
                 Jogador j1 = new Jogador(nome1);
@@ -194,7 +206,6 @@ public class NavegacaoController implements ActionListener {
         }
     }
 
-    // --- MÉTODOS AUXILIARES ---
     private void trocarTela(String nomeCard) {
         cardLayout.show(painelContentor, nomeCard);
         painelContentor.revalidate();
@@ -208,6 +219,10 @@ public class NavegacaoController implements ActionListener {
                 JOptionPane.QUESTION_MESSAGE);
 
         if (nome != null && !nome.trim().isEmpty()) {
+            if (painelJogoSingle != null) {
+                painelContentor.remove(painelJogoSingle);
+            }
+
             Tabuleiro tabuleiro = new Tabuleiro(totalPares, false);
             Jogador jogador = new Jogador(nome);
 
@@ -231,6 +246,10 @@ public class NavegacaoController implements ActionListener {
                     JOptionPane.QUESTION_MESSAGE);
 
             if (nome2 != null && !nome2.trim().isEmpty()) {
+                if (painelJogoMulti != null) {
+                    painelContentor.remove(painelJogoMulti);
+                }
+
                 Tabuleiro tabuleiro = new Tabuleiro(totalPares, true);
                 Jogador j1 = new Jogador(nome1);
                 Jogador j2 = new Jogador(nome2);
@@ -239,27 +258,6 @@ public class NavegacaoController implements ActionListener {
                 painelContentor.add(painelJogoMulti, "JOGO_MULTIPLAYER");
 
                 trocarTela("JOGO_MULTIPLAYER");
-            }
-        }
-    }
-
-    public void solicitarVoltarAoMenu(Component telaAtual, Runnable acaoPausar, Runnable acaoRetomar) {
-        if (acaoPausar != null) {
-            acaoPausar.run();
-        }
-
-        int resposta = JOptionPane.showConfirmDialog(
-                telaAtual,
-                "Deseja realmente cancelar a partida e voltar ao menu?",
-                "Voltar ao Menu",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE);
-
-        if (resposta == JOptionPane.YES_OPTION) {
-            trocarTela("MENU_PRINCIPAL");
-        } else {
-            if (acaoRetomar != null) {
-                acaoRetomar.run();
             }
         }
     }

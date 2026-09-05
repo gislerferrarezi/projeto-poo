@@ -22,13 +22,13 @@ public class JogoController {
     private int jogadorAtual = 0; // 0 = Jogador 1, 1 = Jogador 2
     private int multiplicadorPontos = 1;
 
-    // --- VARIÁVEIS DO CRONÔMETRO E BÔNUS ---
+    // VARIÁVEIS DO CRONÔMETRO E BÔNUS 
     private Timer cronometro;
     private int tempoRestanteJ1 = 30;
     private int tempoRestanteJ2 = 30;
     private boolean jogadorGanhouBonusTurno = false;
-    private Runnable onTickCallback; 
-    private Runnable onTimeoutCallback; 
+    private Runnable onTickCallback;
+    private Runnable onTimeoutCallback;
 
     public enum ResultadoJogada {
         IGNORAR,
@@ -63,7 +63,7 @@ public class JogoController {
         inicializarCronometro();
     }
 
-    // --- LÓGICA PRINCIPAL DO CLIQUE DA CARTA ---
+    //  LÓGICA PRINCIPAL DO CLIQUE DA CARTA 
     public ResultadoJogada processarCliqueCarta(int indice) {
         Carta cartaClicada = tabuleiro.getCarta(indice);
 
@@ -71,11 +71,11 @@ public class JogoController {
             return ResultadoJogada.IGNORAR;
         }
 
-        // --- INTERCEPTA TODAS AS CARTAS ESPECIAIS (Ação Instantânea) ---
+        // INTERCEPTA TODAS AS CARTAS ESPECIAIS (Ação Instantânea) 
         if (cartaClicada.getTipo() != Tipo_Carta.NORMAL) {
             cartaClicada.virar();
             cartaClicada.setDescoberta(true);
-            
+
             switch (cartaClicada.getTipo()) {
                 case PERDEU_A_VEZ:
                     if (primeiraCarta != null) {
@@ -99,14 +99,14 @@ public class JogoController {
             }
         }
 
-        // --- CONTROLE DO PRIMEIRO CLIQUE (Cartas Normais) ---
+        // CONTROLE DO PRIMEIRO CLIQUE (Cartas Normais) 
         if (primeiraCarta == null) {
             primeiraCarta = cartaClicada;
             primeiraCarta.virar();
             return ResultadoJogada.PRIMEIRA_CARTA_VIRADA;
         }
 
-        // --- CONTROLE DO SEGUNDO CLIQUE (Cartas Normais) ---
+        // CONTROLE DO SEGUNDO CLIQUE (Cartas Normais) 
         if (segundaCarta == null && cartaClicada != primeiraCarta) {
             segundaCarta = cartaClicada;
             segundaCarta.virar();
@@ -122,16 +122,14 @@ public class JogoController {
 
                 if (jogador1 != null) {
                     if (jogadorAtual == 0) {
-                        for (int k = 0; k < pontosGanhos; k++)
-                            jogador1.ganharPonto();
+                        jogador1.ganharPontos(pontosGanhos);
                     } else {
-                        for (int k = 0; k < pontosGanhos; k++)
-                            jogador2.ganharPonto();
+                        jogador2.ganharPontos(pontosGanhos);
                     }
                 } else {
-                    for (int k = 0; k < pontosGanhos; k++)
-                        jogador.ganharPonto();
+                    jogador.ganharPontos(pontosGanhos);
                 }
+
                 multiplicadorPontos = 1;
                 totalParesFormados++;
 
@@ -167,7 +165,7 @@ public class JogoController {
         return ResultadoJogada.IGNORAR;
     }
 
-    // --- MÉTODOS INTERNOS DO CRONÔMETRO (SWING TIMER) ---
+    // MÉTODOS INTERNOS DO CRONÔMETRO (SWING TIMER) 
     private void inicializarCronometro() {
         cronometro = new Timer(1000, e -> {
             if (jogadorAtual == 0) {
