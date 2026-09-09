@@ -11,7 +11,7 @@ public class BotaoArredondado extends JButton {
     private final Color corHover;
 
     public BotaoArredondado(String texto, Dimension tamanho) {
-        this(texto, tamanho, Cores.ROXO, Cores.ROXO_HOVER);
+        this(texto, tamanho, Cores.AZUL_BOTAO, Cores.AZUL_BOTAO_HOVER);
     }
 
     public BotaoArredondado(String texto, Dimension tamanho, Color corBase, Color corHover) {
@@ -49,17 +49,14 @@ public class BotaoArredondado extends JButton {
         int w = getWidth();
         int h = getHeight();
 
-        // 1. Sombra 
         g2.setColor(Cores.SOMBRA);
         g2.fillRoundRect(3, 3, w - 3, h - 3, 18, 18);
 
-        // 2. Fundo do Botão 
         g2.setColor(getBackground());
         g2.fillRoundRect(0, 0, w - 3, h - 3, 18, 18);
 
         g2.dispose();
 
-        // 3. Compensação do Texto
         Graphics gTexto = g.create();
         gTexto.translate(-1, -1);
         super.paintComponent(gTexto);

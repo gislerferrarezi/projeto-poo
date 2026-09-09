@@ -6,6 +6,7 @@ import java.awt.*;
 import jogodamemoria.model.Jogador;
 import jogodamemoria.model.Tabuleiro;
 import jogodamemoria.view.componentes.Cores;
+import jogodamemoria.view.componentes.GerenciadorFontes;
 
 public class JanelaVitoriaSingle extends JanelaVitoriaBase {
 
@@ -27,22 +28,22 @@ public class JanelaVitoriaSingle extends JanelaVitoriaBase {
         JPanel cardEstatisticas = new JPanel(new GridLayout(1, 2, 20, 0));
         cardEstatisticas.setMaximumSize(new Dimension(420, 50));
         cardEstatisticas.setPreferredSize(new Dimension(420, 50));
-        cardEstatisticas.setBackground(Cores.CARD_VENCEDOR_FUNDO);
+        cardEstatisticas.setBackground(Cores.VIDRO_FUNDO);
         cardEstatisticas.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Cores.CARD_VENCEDOR_BORDA, 2, true),
+                BorderFactory.createLineBorder(Cores.VIDRO_BORDA, 2, true),
                 BorderFactory.createEmptyBorder(8, 16, 8, 16)));
 
         // Bloco 1: Tentativas
         JLabel lblTentativas = new JLabel("TENTATIVAS: " + tentativas, SwingConstants.CENTER);
-        lblTentativas.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        lblTentativas.setForeground(Cores.CARD_VENCEDOR_TEXTO_NOME);
+        lblTentativas.setFont(GerenciadorFontes.obterFonte(Font.BOLD, 15f));
+        lblTentativas.setForeground(Cores.TEXTO_CIANO);
 
         // Bloco 2: Tempo
         String textoTempo = tempoFinal.toUpperCase().startsWith("TEMPO") ? tempoFinal.toUpperCase()
                 : "TEMPO: " + tempoFinal.toUpperCase();
         JLabel lblTempo = new JLabel(textoTempo, SwingConstants.CENTER);
-        lblTempo.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        lblTempo.setForeground(Cores.CARD_VENCEDOR_TEXTO_NOME);
+        lblTempo.setFont(GerenciadorFontes.obterFonte(Font.BOLD, 15f));
+        lblTempo.setForeground(Cores.TEXTO_BRANCO);
 
         cardEstatisticas.add(lblTentativas);
         cardEstatisticas.add(lblTempo);

@@ -5,6 +5,7 @@ import java.awt.*;
 
 import jogodamemoria.view.componentes.BotaoArredondado;
 import jogodamemoria.view.componentes.Cores;
+import jogodamemoria.view.componentes.GerenciadorFontes;
 import jogodamemoria.view.componentes.PainelComFundo;
 import jogodamemoria.view.componentes.PainelVidro;
 
@@ -20,14 +21,14 @@ public abstract class JanelaMenuBase extends PainelComFundo {
         setLayout(new BorderLayout(0, 15));
         setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50));
 
-        // TÍTULO 
+        // TÍTULO
         PainelVidro painelTitulo = new PainelVidro();
         painelTitulo.setLayout(new BorderLayout());
         painelTitulo.setBorder(BorderFactory.createEmptyBorder(10, 40, 10, 40));
 
         JLabel lblTitulo = new JLabel(titulo, SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 38));
-        lblTitulo.setForeground(Cores.TEXTO);
+        lblTitulo.setFont(GerenciadorFontes.obterFonte(Font.BOLD, 38f));
+        lblTitulo.setForeground(Cores.TEXTO_BRANCO);
         painelTitulo.add(lblTitulo, BorderLayout.CENTER);
 
         JPanel wrapperTitulo = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -66,19 +67,18 @@ public abstract class JanelaMenuBase extends PainelComFundo {
         painelRodape.setOpaque(false);
 
         btnVoltar = new BotaoArredondado("Voltar", new Dimension(150, 48));
-        btnVoltar.setFont(new Font("Segoe UI", Font.BOLD, 17));
+        btnVoltar.setFont(GerenciadorFontes.obterFonte(Font.BOLD, 17f));
 
         painelRodape.add(btnVoltar);
         add(painelRodape, BorderLayout.SOUTH);
     }
 
-    // Utilitário para adicionar botões no card esquerdo no padrão empilhado.     
     protected void adicionarBotaoOpcao(BotaoArredondado botao, int indiceY) {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = indiceY;
         gbc.insets = new Insets(12, 0, 12, 0);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.CENTER; 
         cardBotoes.add(botao, gbc);
     }
 

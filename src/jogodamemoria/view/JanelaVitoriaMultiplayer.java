@@ -6,6 +6,7 @@ import java.awt.*;
 import jogodamemoria.model.Jogador;
 import jogodamemoria.model.Tabuleiro;
 import jogodamemoria.view.componentes.Cores;
+import jogodamemoria.view.componentes.GerenciadorFontes;
 
 public class JanelaVitoriaMultiplayer extends JanelaVitoriaBase {
 
@@ -50,26 +51,26 @@ public class JanelaVitoriaMultiplayer extends JanelaVitoriaBase {
         card.setPreferredSize(new Dimension(420, 50));
 
         // Fundo e bordas baseados no resultado
-        card.setBackground(eVencedor ? Cores.CARD_VENCEDOR_FUNDO : Cores.CARD_PERDEDOR_FUNDO);
+        card.setBackground(Cores.VIDRO_FUNDO);
         card.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(
-                        eVencedor ? Cores.CARD_VENCEDOR_BORDA : Cores.CARD_PERDEDOR_BORDA,
+                        Cores.VIDRO_BORDA,
                         eVencedor ? 2 : 1,
                         true),
                 BorderFactory.createEmptyBorder(8, 16, 8, 16)));
 
         // Esquerda: Nome do jogador
         JLabel lblNome = new JLabel(nome);
-        lblNome.setFont(new Font("Segoe UI", Font.BOLD, eVencedor ? 18 : 16));
-        lblNome.setForeground(eVencedor ? Cores.CARD_VENCEDOR_TEXTO_NOME : Cores.CARD_PERDEDOR_TEXTO_NOME);
+        lblNome.setFont(GerenciadorFontes.obterFonte(Font.BOLD, eVencedor ? 18f : 16f));
+        lblNome.setForeground(eVencedor ? Cores.TEXTO_CIANO : Cores.TEXTO_BRANCO);
 
         // Direita: Pontuação e contagem de pares
         String textPontos = pontos == 1 ? "1 pt" : pontos + " pts";
         String textPares = pares == 1 ? "1 par" : pares + " pares";
 
         JLabel lblPlacar = new JLabel(textPontos + "  •  " + textPares);
-        lblPlacar.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        lblPlacar.setForeground(eVencedor ? Cores.CARD_VENCEDOR_TEXTO_PLACAR : Cores.CARD_PERDEDOR_TEXTO_PLACAR);
+        lblPlacar.setFont(GerenciadorFontes.obterFonte(Font.BOLD, 15f));
+        lblPlacar.setForeground(Cores.TEXTO_BRANCO);
 
         card.add(lblNome, BorderLayout.WEST);
         card.add(lblPlacar, BorderLayout.EAST);

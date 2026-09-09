@@ -7,6 +7,7 @@ import java.awt.geom.RoundRectangle2D;
 import jogodamemoria.model.Tabuleiro;
 import jogodamemoria.view.componentes.BotaoArredondado;
 import jogodamemoria.view.componentes.Cores;
+import jogodamemoria.view.componentes.GerenciadorFontes;
 import jogodamemoria.view.componentes.PainelComFundo;
 import jogodamemoria.view.componentes.PainelVidro;
 
@@ -28,7 +29,7 @@ public abstract class JanelaVitoriaBase extends JDialog {
         setLocationRelativeTo(janelaPai);
         setShape(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), 28, 28));
 
-        // Fundo roxo padrão do jogo
+        // Fundo azul padrão do jogo
         PainelComFundo painelFundo = new PainelComFundo("/jogodamemoria/recursos/imagens/fundo.png");
         painelFundo.setLayout(new GridBagLayout());
 
@@ -38,8 +39,8 @@ public abstract class JanelaVitoriaBase extends JDialog {
 
         // Título de Vitória 
         JLabel lblTitulo = new JLabel(titulo, SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        lblTitulo.setForeground(Cores.TEXTO_VITORIA);
+        lblTitulo.setFont(GerenciadorFontes.obterFonte(Font.BOLD, 28f));
+        lblTitulo.setForeground(Cores.TEXTO_BRANCO);
         lblTitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
         cardCentral.add(lblTitulo);
         cardCentral.add(Box.createVerticalStrut(16));
@@ -47,16 +48,16 @@ public abstract class JanelaVitoriaBase extends JDialog {
         // Divisor Translúcido
         JSeparator divisor = new JSeparator(SwingConstants.HORIZONTAL);
         divisor.setMaximumSize(new Dimension(440, 1));
-        divisor.setForeground(Cores.DIVISOR_TRANSLUCIDO);
-        divisor.setBackground(Cores.DIVISOR_TRANSLUCIDO);
+        divisor.setForeground(Cores.VIDRO_BORDA);
+        divisor.setBackground(Cores.VIDRO_BORDA);
         divisor.setAlignmentX(Component.CENTER_ALIGNMENT);
         cardCentral.add(divisor);
         cardCentral.add(Box.createVerticalStrut(20));
 
         // Subtítulo
         JLabel lblSubtitulo = new JLabel("PLACAR FINAL", SwingConstants.CENTER);
-        lblSubtitulo.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        lblSubtitulo.setForeground(Cores.SUBTITULO_VITORIA);
+        lblSubtitulo.setFont(GerenciadorFontes.obterFonte(Font.BOLD, 14f));
+        lblSubtitulo.setForeground(Cores.TEXTO_CIANO);
         lblSubtitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
         cardCentral.add(lblSubtitulo);
         cardCentral.add(Box.createVerticalStrut(14));
@@ -71,9 +72,8 @@ public abstract class JanelaVitoriaBase extends JDialog {
         painelBotoes.setOpaque(false);
         painelBotoes.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        btnMenu = criarBotao("Menu", Cores.BOTAO_VITORIA_SECUNDARIO, Cores.BOTAO_VITORIA_SECUNDARIO_HOVER);
-        btnJogarNovamente = criarBotao(textoBotaoJogarNovamente, Cores.BOTAO_VITORIA_PRIMARIO,
-                Cores.BOTAO_VITORIA_PRIMARIO_HOVER);
+        btnMenu = criarBotao("Menu", Cores.AZUL_BOTAO, Cores.AZUL_BOTAO_HOVER);
+        btnJogarNovamente = criarBotao(textoBotaoJogarNovamente, Cores.AZUL_BOTAO, Cores.AZUL_BOTAO_HOVER);
 
         painelBotoes.add(btnMenu);
         painelBotoes.add(btnJogarNovamente);
@@ -85,7 +85,7 @@ public abstract class JanelaVitoriaBase extends JDialog {
 
     protected static BotaoArredondado criarBotao(String texto, Color corBase, Color corHover) {
         BotaoArredondado botao = new BotaoArredondado(texto, new Dimension(175, 46), corBase, corHover);
-        botao.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        botao.setFont(GerenciadorFontes.obterFonte(Font.BOLD, 15f));
         return botao;
     }
 

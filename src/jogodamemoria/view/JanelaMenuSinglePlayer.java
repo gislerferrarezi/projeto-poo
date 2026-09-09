@@ -13,18 +13,18 @@ public class JanelaMenuSinglePlayer extends JanelaMenuBase {
     private final BotaoArredondado btnJogarPadrao;
     private final JLabel lblRegrasConteudo;
 
-    private static final String REGRAS_PADRAO_INICIAL = "<html><div style='text-align: center; color: #2D1B4E; font-family: Segoe UI;'>"
+    private static final String REGRAS_PADRAO_INICIAL = "<html><div style='text-align: center; color: #FFFFFF; font-family: Segoe UI;'>"
             + "<span style='font-size: 32px; font-weight: bold;'>INSTRUÇÕES</span><br><br><br>"
             + "<span style='font-size: 20px;'>Passe o mouse sobre um dos modos ao lado para visualizar as regras e detalhes da partida.</span>"
             + "</div></html>";
 
-    private static final String REGRAS_FACIL = "<html><div style='text-align: center; color: #2D1B4E; font-family: Segoe UI;'>"
+    private static final String REGRAS_FACIL = "<html><div style='text-align: center; color: #FFFFFF; font-family: Segoe UI;'>"
             + "<span style='font-size: 32px; font-weight: bold;'>MODO FÁCIL</span><br><br><br>"
             + "<span style='font-size: 19px;'>O objetivo é encontrar todos os pares o mais rápido possível, competindo contra o tempo e você mesmo.<br><br><br>"
             + "<b>Regras:</b> Este nível conta com <b>6 pares</b> (12 cartas no total), tentativas ilimitadas e sem limite de tempo.</span>"
             + "</div></html>";
 
-    private static final String REGRAS_PADRAO = "<html><div style='text-align: center; color: #2D1B4E; font-family: Segoe UI;'>"
+    private static final String REGRAS_PADRAO = "<html><div style='text-align: center; color: #FFFFFF; font-family: Segoe UI;'>"
             + "<span style='font-size: 32px; font-weight: bold;'>MODO PADRÃO</span><br><br><br>"
             + "<span style='font-size: 19px;'>As mesmas regras do modo fácil se aplicam aqui, porém com um desafio muito maior para a sua mente.<br><br><br>"
             + "<b>Regras:</b> São <b>12 pares</b> (24 cartas no total). Prepare-se para testar sua concentração ao máximo!</span>"

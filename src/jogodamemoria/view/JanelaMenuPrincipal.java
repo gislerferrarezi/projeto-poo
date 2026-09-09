@@ -1,14 +1,13 @@
 package jogodamemoria.view;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import javax.swing.*;
 
 import jogodamemoria.controller.AudioController;
 import jogodamemoria.view.componentes.BotaoArredondado;
 import jogodamemoria.view.componentes.Cores;
 import jogodamemoria.view.componentes.EfeitoDigitacao;
+import jogodamemoria.view.componentes.GerenciadorFontes;
 import jogodamemoria.view.componentes.GerenciadorImagens;
 import jogodamemoria.view.componentes.PainelComFundo;
 import jogodamemoria.view.componentes.PainelVidro;
@@ -34,45 +33,34 @@ public class JanelaMenuPrincipal extends JFrame {
         setShape(new java.awt.geom.RoundRectangle2D.Double(
                 0, 0, getWidth(), getHeight(), 30, 30));
 
-        // Painel Principal 
+        // Painel Principal
         PainelComFundo fundo = new PainelComFundo("/jogodamemoria/recursos/imagens/fundo.png");
         fundo.setLayout(new OverlayLayout(fundo));
         setContentPane(fundo);
 
-        // CAMADA SUPERIOR: BOTÃO DE SOM 
-        JPanel painelSomContainer = new JPanel(new BorderLayout());
-        painelSomContainer.setOpaque(false);
-
-        JPanel painelInferiorDireito = new JPanel(new FlowLayout(FlowLayout.RIGHT, 30, 30));
-        painelInferiorDireito.setOpaque(false);
-
+        // CAMADA 1: BOTÃO DE SOM (JButton limpo, sem bordas nem container)
         btnSom = new JButton();
-        btnSom.setPreferredSize(new Dimension(54, 54));
-        btnSom.setBackground(Cores.ROXO);
+        btnSom.setPreferredSize(new Dimension(50, 50));
+        btnSom.setBorder(null);
         btnSom.setBorderPainted(false);
-        btnSom.setFocusPainted(false);
         btnSom.setContentAreaFilled(false);
+        btnSom.setFocusPainted(false);
         btnSom.setOpaque(false);
         btnSom.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        btnSom.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                btnSom.setBackground(Cores.ROXO_HOVER);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                btnSom.setBackground(Cores.ROXO);
-            }
-        });
-
         atualizarIconeSomBotao(AudioController.isSomAtivado());
 
-        painelInferiorDireito.add(btnSom);
-        painelSomContainer.add(painelInferiorDireito, BorderLayout.SOUTH);
+        JPanel painelSomContainer = new JPanel(new GridBagLayout());
+        painelSomContainer.setOpaque(false);
 
-        // CAMADA INFERIOR: CARD CENTRALIZADO 
+        GridBagConstraints gbcSom = new GridBagConstraints();
+        gbcSom.weightx = 1.0;
+        gbcSom.weighty = 1.0;
+        gbcSom.anchor = GridBagConstraints.SOUTHEAST;
+        gbcSom.insets = new Insets(0, 0, 30, 30);
+        painelSomContainer.add(btnSom, gbcSom);
+
+        // CAMADA 2: CARD CENTRALIZADO
         JPanel painelCentral = new JPanel(new GridBagLayout());
         painelCentral.setOpaque(false);
 
@@ -81,22 +69,22 @@ public class JanelaMenuPrincipal extends JFrame {
         menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
 
         // TÍTULO
-        JLabel titulo = new JLabel("Campus.find()");
-        titulo.setFont(new Font("Segoe UI", Font.BOLD, 54));
-        titulo.setForeground(Cores.TEXTO);
+        JLabel titulo = new JLabel("UNESP MEMORY");
+        titulo.setFont(GerenciadorFontes.obterFonte(Font.BOLD, 54f));
+        titulo.setForeground(Cores.TEXTO_BRANCO);
         titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // LINHA DIVISORA  
+        // LINHA DIVISORA
         JSeparator divisor = new JSeparator(SwingConstants.HORIZONTAL);
         divisor.setMaximumSize(new Dimension(360, 1));
-        divisor.setForeground(Cores.DIVISOR_TRANSLUCIDO);
-        divisor.setBackground(Cores.DIVISOR_TRANSLUCIDO);
+        divisor.setForeground(Cores.VIDRO_BORDA);
+        divisor.setBackground(Cores.VIDRO_BORDA);
         divisor.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // SUBTÍTULO COM DIGITAÇÃO
         JLabel subtitulo = new JLabel();
-        subtitulo.setFont(new Font("Consolas", Font.BOLD, 20));
-        subtitulo.setForeground(Cores.TEXTO_MUTED);
+        subtitulo.setFont(GerenciadorFontes.obterFonte(Font.BOLD, 20f));
+        subtitulo.setForeground(Cores.TEXTO_CIANO);
         subtitulo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         String[] textos = {
@@ -106,7 +94,7 @@ public class JanelaMenuPrincipal extends JFrame {
 
         new EfeitoDigitacao(subtitulo, textos).iniciar();
 
-        // BOTÕES DO MENU
+        // BOTÕES DO MENU (Uso exclusivo da classe BotaoArredondado)
         Dimension tamanhoBotao = new Dimension(360, 56);
 
         btnUmJogador = new BotaoArredondado("Um Jogador", tamanhoBotao);
@@ -145,7 +133,7 @@ public class JanelaMenuPrincipal extends JFrame {
 
         painelCentral.add(card);
 
-        // ADICIONA AS CAMADAS
+        // MONTAGEM DAS CAMADAS NO OVERLAY
         fundo.add(painelSomContainer);
         fundo.add(painelCentral);
     }
