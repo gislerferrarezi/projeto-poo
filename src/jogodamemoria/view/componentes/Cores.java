@@ -3,10 +3,6 @@ package jogodamemoria.view.componentes;
 import java.awt.Color;
 
 public final class Cores {
-
-    private Cores() {
-    }
-
     public static final Color AZUL_BOTAO = new Color(0, 51, 102);
     public static final Color AZUL_BOTAO_HOVER = new Color(0, 85, 153);
     public static final Color AZUL_BOTAO_PRESS = new Color(0, 35, 70);

@@ -38,7 +38,7 @@ public class JanelaMenuPrincipal extends JFrame {
         fundo.setLayout(new OverlayLayout(fundo));
         setContentPane(fundo);
 
-        // CAMADA 1: BOTÃO DE SOM (JButton limpo, sem bordas nem container)
+        // CAMADA 1: BOTÃO DE SOM
         btnSom = new JButton();
         btnSom.setPreferredSize(new Dimension(50, 50));
         btnSom.setBorder(null);
@@ -50,7 +50,17 @@ public class JanelaMenuPrincipal extends JFrame {
 
         atualizarIconeSomBotao(AudioController.isSomAtivado());
 
-        JPanel painelSomContainer = new JPanel(new GridBagLayout());
+        JPanel painelSomContainer = new JPanel(new GridBagLayout()) {
+            @Override
+            public boolean contains(int x, int y) {
+                for (Component c : getComponents()) {
+                    if (c.getBounds().contains(x, y)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
         painelSomContainer.setOpaque(false);
 
         GridBagConstraints gbcSom = new GridBagConstraints();
@@ -94,7 +104,7 @@ public class JanelaMenuPrincipal extends JFrame {
 
         new EfeitoDigitacao(subtitulo, textos).iniciar();
 
-        // BOTÕES DO MENU (Uso exclusivo da classe BotaoArredondado)
+        // BOTÕES DO MENU
         Dimension tamanhoBotao = new Dimension(360, 56);
 
         btnUmJogador = new BotaoArredondado("Um Jogador", tamanhoBotao);
