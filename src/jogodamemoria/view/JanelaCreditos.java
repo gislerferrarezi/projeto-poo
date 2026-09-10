@@ -40,8 +40,8 @@ public class JanelaCreditos extends PainelComFundo {
 
         // 2. Descrição / Objetivo
         conteudo.add(criarRotulo("<html><div style='text-align: center; width: 320px; line-height: 1.3;'>"
-                + "Jogo da memória interativo e temático desenvolvido com elementos visuais inspirados no Câmpus da<br><b>UNESP Bauru</b>."
-                + "</div></html>", new Font("Segoe UI", Font.PLAIN, 15), Cores.TEXTO_BRANCO));
+        + "Jogo da memória interativo e temático, com cartas de <b>Baralho Clássico</b> e modos para <b>um ou dois jogadores</b>."
+        + "</div></html>", new Font("Segoe UI", Font.PLAIN, 15), Cores.TEXTO_BRANCO));
         conteudo.add(Box.createVerticalStrut(22));
 
         // 3. Cards Integrantes
