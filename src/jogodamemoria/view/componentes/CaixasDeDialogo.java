@@ -13,10 +13,12 @@ public class CaixasDeDialogo {
         JTextField txtNome = estilizarTextField();
 
         painelFundo.add(criarLabelTitulo("Identificação do Jogador"));
-        painelFundo.add(Box.createRigidArea(new Dimension(0, 5)));
-        painelFundo.add(criarLabelSubtitulo("Digite seu nome para começar:"));
         painelFundo.add(Box.createRigidArea(new Dimension(0, 15)));
+
+        painelFundo.add(criarLabelSubtitulo("Digite seu nome para começar:"));
+        painelFundo.add(Box.createRigidArea(new Dimension(0, 6))); // Padronizado em 6px
         painelFundo.add(txtNome);
+
         painelFundo.add(Box.createRigidArea(new Dimension(0, 20)));
 
         final String[] resultado = { null };
@@ -35,12 +37,20 @@ public class CaixasDeDialogo {
         JTextField txtP2 = estilizarTextField();
 
         painelFundo.add(criarLabelTitulo("Jogadores"));
-        painelFundo.add(Box.createRigidArea(new Dimension(0, 20)));
+        painelFundo.add(Box.createRigidArea(new Dimension(0, 15)));
+
+        // Bloco Jogador 1
         painelFundo.add(criarLabelSubtitulo("Nome do Jogador 1:"));
+        painelFundo.add(Box.createRigidArea(new Dimension(0, 6))); // Padronizado em 6px
         painelFundo.add(txtP1);
-        painelFundo.add(Box.createRigidArea(new Dimension(0, 10)));
+
+        painelFundo.add(Box.createRigidArea(new Dimension(0, 15)));
+
+        // Bloco Jogador 2
         painelFundo.add(criarLabelSubtitulo("Nome do Jogador 2:"));
+        painelFundo.add(Box.createRigidArea(new Dimension(0, 6))); // Padronizado em 6px
         painelFundo.add(txtP2);
+
         painelFundo.add(Box.createRigidArea(new Dimension(0, 20)));
 
         final String[][] resultado = { null };
