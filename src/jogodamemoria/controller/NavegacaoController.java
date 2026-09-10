@@ -14,6 +14,7 @@ import jogodamemoria.view.JanelaMenuPrincipal;
 import jogodamemoria.view.JanelaMenuSinglePlayer;
 import jogodamemoria.view.JanelaSinglePlayer;
 import jogodamemoria.view.JanelaVitoriaSingle;
+import jogodamemoria.view.componentes.CaixasDeDialogo;
 import jogodamemoria.view.JanelaMultiplayer;
 import jogodamemoria.view.JanelaVitoriaMultiplayer;
 
@@ -100,14 +101,12 @@ public class NavegacaoController implements ActionListener {
         if (acaoPausar != null)
             acaoPausar.run();
 
-        int resposta = JOptionPane.showConfirmDialog(
+        boolean resposta = CaixasDeDialogo.confirmarAcao(
                 telaAtual,
-                "Deseja realmente cancelar a partida e voltar ao menu?",
-                "Voltar ao Menu",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE);
+                "Deseja realmente cancelar a partida?",
+                "Voltar ao Menu");
 
-        if (resposta == JOptionPane.YES_OPTION) {
+        if (resposta) {
             trocarTela("MENU_PRINCIPAL");
         } else if (acaoRetomar != null) {
             acaoRetomar.run();
@@ -213,10 +212,7 @@ public class NavegacaoController implements ActionListener {
     }
 
     private void iniciarPartidaSolo(int totalPares) {
-        String nome = JOptionPane.showInputDialog(janelaMenuPrincipal,
-                "Digite seu nome para começar:",
-                "Identificação do Jogador",
-                JOptionPane.QUESTION_MESSAGE);
+        String nome = CaixasDeDialogo.pedirNomeSingle(janelaMenuPrincipal);
 
         if (nome != null && !nome.trim().isEmpty()) {
             if (painelJogoSingle != null) {
@@ -234,18 +230,13 @@ public class NavegacaoController implements ActionListener {
     }
 
     private void iniciarPartidaMultiplayer(int totalPares) {
-        String nome1 = JOptionPane.showInputDialog(janelaMenuPrincipal,
-                "Digite o nome do Jogador 1:",
-                "Identificação do Jogador 1",
-                JOptionPane.QUESTION_MESSAGE);
+        String[] nomes = CaixasDeDialogo.pedirNomesMulti(janelaMenuPrincipal);
 
-        if (nome1 != null && !nome1.trim().isEmpty()) {
-            String nome2 = JOptionPane.showInputDialog(janelaMenuPrincipal,
-                    "Digite o nome do Jogador 2:",
-                    "Identificação do Jogador 2",
-                    JOptionPane.QUESTION_MESSAGE);
+        if (nomes != null && nomes.length == 2) {
+            String nome1 = nomes[0];
+            String nome2 = nomes[1];
 
-            if (nome2 != null && !nome2.trim().isEmpty()) {
+            if (nome1 != null && !nome1.trim().isEmpty() && nome2 != null && !nome2.trim().isEmpty()) {
                 if (painelJogoMulti != null) {
                     painelContentor.remove(painelJogoMulti);
                 }
