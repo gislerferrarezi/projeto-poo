@@ -152,7 +152,7 @@ public class NavegacaoController implements ActionListener {
             trocarTela("MENU_PRINCIPAL");
         } else if (fonte == janelaMenuMultiplayer.getBtnMultiplayerLocal()) {
             AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
-            iniciarPartidaMultiplayer(12);
+            iniciarPartidaMultiplayer(13); // Alterado de 12 para 13
         }
 
         else if (fonte == janelaCreditos.getBtnVoltar()) {
@@ -194,7 +194,7 @@ public class NavegacaoController implements ActionListener {
                     painelContentor.remove(painelJogoMulti);
                 }
 
-                Tabuleiro novoTabuleiro = new Tabuleiro(12, true);
+                Tabuleiro novoTabuleiro = new Tabuleiro(13, true); // Garante 13 pares normais + 3 especiais
                 Jogador j1 = new Jogador(nome1);
                 Jogador j2 = new Jogador(nome2);
 

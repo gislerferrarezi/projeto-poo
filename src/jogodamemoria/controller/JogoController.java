@@ -1,10 +1,10 @@
 package jogodamemoria.controller;
 
+import javax.swing.Timer;
 import jogodamemoria.model.Carta;
-import jogodamemoria.model.Tabuleiro;
 import jogodamemoria.model.Carta.Tipo_Carta;
 import jogodamemoria.model.Jogador;
-import javax.swing.Timer;
+import jogodamemoria.model.Tabuleiro;
 
 public class JogoController {
 
@@ -22,7 +22,7 @@ public class JogoController {
     private int jogadorAtual = 0; // 0 = Jogador 1, 1 = Jogador 2
     private int multiplicadorPontos = 1;
 
-    // VARIÁVEIS DO CRONÔMETRO E BÔNUS 
+    // VARIÁVEIS DO CRONÔMETRO E BÔNUS
     private Timer cronometro;
     private int tempoRestanteJ1 = 30;
     private int tempoRestanteJ2 = 30;
@@ -45,7 +45,7 @@ public class JogoController {
     public JogoController(Tabuleiro tabuleiro, Jogador jogador) {
         this.tabuleiro = tabuleiro;
         this.jogador = jogador;
-        this.totalParesObjetivo = tabuleiro.getTamanho() / 2;
+        this.totalParesObjetivo = calcularParesObjetivo(tabuleiro);
     }
 
     // Construtor Modo Multiplayer
@@ -53,17 +53,21 @@ public class JogoController {
         this.tabuleiro = tabuleiro;
         this.jogador1 = jogador1;
         this.jogador2 = jogador2;
-        int cartasNormais = 0;
-        for (int i = 0; i < tabuleiro.getTamanho(); i++) {
-            if (tabuleiro.getCarta(i).getTipo() == Tipo_Carta.NORMAL) {
-                cartasNormais++;
-            }
-        }
-        this.totalParesObjetivo = cartasNormais / 2;
+        this.totalParesObjetivo = calcularParesObjetivo(tabuleiro);
         inicializarCronometro();
     }
 
-    //  LÓGICA PRINCIPAL DO CLIQUE DA CARTA 
+    private int calcularParesObjetivo(Tabuleiro tab) {
+        int cartasNormais = 0;
+        for (int i = 0; i < tab.getTamanho(); i++) {
+            if (tab.getCarta(i).getTipo() == Tipo_Carta.NORMAL) {
+                cartasNormais++;
+            }
+        }
+        return cartasNormais / 2;
+    }
+
+    // --- LÓGICA PRINCIPAL DO CLIQUE DA CARTA ---
     public ResultadoJogada processarCliqueCarta(int indice) {
         Carta cartaClicada = tabuleiro.getCarta(indice);
 
@@ -71,7 +75,7 @@ public class JogoController {
             return ResultadoJogada.IGNORAR;
         }
 
-        // INTERCEPTA TODAS AS CARTAS ESPECIAIS (Ação Instantânea) 
+        // INTERCEPTA TODAS AS CARTAS ESPECIAIS (Ação Instantânea)
         if (cartaClicada.getTipo() != Tipo_Carta.NORMAL) {
             cartaClicada.virar();
             cartaClicada.setDescoberta(true);
@@ -99,14 +103,14 @@ public class JogoController {
             }
         }
 
-        // CONTROLE DO PRIMEIRO CLIQUE (Cartas Normais) 
+        // CONTROLE DO PRIMEIRO CLIQUE (Cartas Normais)
         if (primeiraCarta == null) {
             primeiraCarta = cartaClicada;
             primeiraCarta.virar();
             return ResultadoJogada.PRIMEIRA_CARTA_VIRADA;
         }
 
-        // CONTROLE DO SEGUNDO CLIQUE (Cartas Normais) 
+        // CONTROLE DO SEGUNDO CLIQUE (Cartas Normais)
         if (segundaCarta == null && cartaClicada != primeiraCarta) {
             segundaCarta = cartaClicada;
             segundaCarta.virar();
@@ -126,7 +130,7 @@ public class JogoController {
                     } else {
                         jogador2.ganharPontos(pontosGanhos);
                     }
-                } else {
+                } else if (jogador != null) {
                     jogador.ganharPontos(pontosGanhos);
                 }
 
@@ -143,9 +147,7 @@ public class JogoController {
                 return ResultadoJogada.ACERTOU_PAR;
 
             } else {
-                primeiraCarta.esconder();
-                segundaCarta.esconder();
-
+                // ERROU O PAR: Mantém viradas na memória para o Swing desenhar primeiro
                 multiplicadorPontos = 1;
 
                 if (jogador1 != null) {
@@ -156,16 +158,26 @@ public class JogoController {
                     }
                 }
 
-                primeiraCarta = null;
-                segundaCarta = null;
-
                 return ResultadoJogada.ERROU_PAR;
             }
         }
         return ResultadoJogada.IGNORAR;
     }
 
-    // MÉTODOS INTERNOS DO CRONÔMETRO (SWING TIMER) 
+    // --- FINALIZA O TURNO COM ERRO (Chamado pelo Timer da Janela de ambos os
+    // modos) ---
+    public void finalizarTurnoErrado() {
+        if (primeiraCarta != null) {
+            primeiraCarta.esconder();
+            primeiraCarta = null;
+        }
+        if (segundaCarta != null) {
+            segundaCarta.esconder();
+            segundaCarta = null;
+        }
+    }
+
+    // --- MÉTODOS INTERNOS DO CRONÔMETRO (SWING TIMER) ---
     private void inicializarCronometro() {
         cronometro = new Timer(1000, e -> {
             if (jogadorAtual == 0) {
@@ -191,14 +203,7 @@ public class JogoController {
     }
 
     private void lidarTempoEsgotado() {
-        if (primeiraCarta != null) {
-            primeiraCarta.esconder();
-            primeiraCarta = null;
-        }
-        if (segundaCarta != null) {
-            segundaCarta.esconder();
-            segundaCarta = null;
-        }
+        finalizarTurnoErrado();
 
         jogadorAtual = (jogadorAtual == 0) ? 1 : 0;
         tempoRestanteJ1 = 30;
@@ -211,22 +216,20 @@ public class JogoController {
 
     private void alternarTurnoPorPunicao() {
         if (jogador1 != null) {
-            if (jogadorAtual == 0) {
-                jogadorAtual = 1;
-            } else {
-                jogadorAtual = 0;
-            }
+            jogadorAtual = (jogadorAtual == 0) ? 1 : 0;
         }
     }
 
     public void iniciarCronometro() {
-        if (cronometro != null)
+        if (cronometro != null) {
             cronometro.start();
+        }
     }
 
     public void pararCronometro() {
-        if (cronometro != null)
+        if (cronometro != null) {
             cronometro.stop();
+        }
     }
 
     public void resetarCronometro() {

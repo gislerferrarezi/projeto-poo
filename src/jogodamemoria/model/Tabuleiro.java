@@ -18,53 +18,37 @@ public class Tabuleiro {
     }
 
     private void inicializarTabuleiro() {
-        if (!isMultiplayer) {            
-            for (int i = 1; i <= totalPares; i++) {
-                String valorCarta = "" + i;
-                cartas.add(new Carta(i, valorCarta));
-                cartas.add(new Carta(i, valorCarta));
-            }
-        } else {
-            int j = 1;
-            for (int i = 1; i <= (totalPares); i++) {
-                String valorCarta = "" + j;
-                cartas.add(new Carta(j, valorCarta));
-                cartas.add(new Carta(j, valorCarta));
-                j++;
-            }
-            String valorPerdeu1 = "Perdeu_A_Vez_1";
-            cartas.add(new Carta(j, valorPerdeu1, Carta.Tipo_Carta.PERDEU_A_VEZ));
-            j++;
-
-            String valorPerdeu2 = "Perdeu_A_Vez_2";
-            cartas.add(new Carta(j, valorPerdeu2, Carta.Tipo_Carta.PERDEU_A_VEZ));
-            j++;
-
-            String valorDeNovo = "Jogue_De_Novo";
-            cartas.add(new Carta(j, valorDeNovo, Carta.Tipo_Carta.JOGUE_DE_NOVO));
-            cartas.add(new Carta(j, valorDeNovo, Carta.Tipo_Carta.JOGUE_DE_NOVO));
-            j++;
-
-            String valorDobro = "Dobro_Pontos";
-            cartas.add(new Carta(j, valorDobro, Carta.Tipo_Carta.DOBRO_PONTOS));
-            cartas.add(new Carta(j, valorDobro, Carta.Tipo_Carta.DOBRO_PONTOS));
+        // 1. CARTAS NORMAIS 
+        for (int i = 0; i < totalPares; i++) {
+            String valorCarta = "" + (i + 1);
+            cartas.add(new Carta(i, valorCarta));
+            cartas.add(new Carta(i, valorCarta));
         }
 
+        // 2. CARTAS ESPECIAIS (MULTIPLAYER) 
+        if (isMultiplayer) {
+            int idEspecial = totalPares;
+
+            // Par 1: Perdeu a Vez
+            String valorPerdeu = "Perdeu_A_Vez";
+            cartas.add(new Carta(idEspecial, valorPerdeu, Carta.Tipo_Carta.PERDEU_A_VEZ));
+            cartas.add(new Carta(idEspecial, valorPerdeu, Carta.Tipo_Carta.PERDEU_A_VEZ));
+            idEspecial++;
+
+            // Par 2: Jogue de Novo
+            String valorDeNovo = "Jogue_De_Novo";
+            cartas.add(new Carta(idEspecial, valorDeNovo, Carta.Tipo_Carta.JOGUE_DE_NOVO));
+            cartas.add(new Carta(idEspecial, valorDeNovo, Carta.Tipo_Carta.JOGUE_DE_NOVO));
+            idEspecial++;
+
+            // Par 3: Dobro de Pontos
+            String valorDobro = "Dobro_Pontos";
+            cartas.add(new Carta(idEspecial, valorDobro, Carta.Tipo_Carta.DOBRO_PONTOS));
+            cartas.add(new Carta(idEspecial, valorDobro, Carta.Tipo_Carta.DOBRO_PONTOS));
+        }
+
+        // Embaralha as cartas
         Collections.shuffle(cartas);
-
-        // GABARITO FORMATADO EM GRID 
-        imprimirGabaritoGrid();
-    }
-
-    private void imprimirGabaritoGrid() {
-        int totalCartas = cartas.size();        
-        int colunas = (totalCartas % 4 == 0) ? 4 : 6;      
-        for (int i = 0; i < totalCartas; i++) {
-            System.out.printf("[%-12s] ", cartas.get(i).getValor());           
-            if ((i + 1) % colunas == 0) {
-                System.out.println();
-            }
-        }        
     }
 
     public Carta getCarta(int indice) {

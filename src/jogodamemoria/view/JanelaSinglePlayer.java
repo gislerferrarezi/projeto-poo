@@ -3,110 +3,98 @@ package jogodamemoria.view;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.awt.event.KeyEvent;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.Timer;
 
-import javax.swing.*;
-import jogodamemoria.model.Tabuleiro;
-import jogodamemoria.model.Jogador;
 import jogodamemoria.controller.AudioController;
 import jogodamemoria.controller.JogoController;
 import jogodamemoria.controller.JogoController.ResultadoJogada;
 import jogodamemoria.controller.NavegacaoController;
+import jogodamemoria.model.Jogador;
+import jogodamemoria.model.Tabuleiro;
+import jogodamemoria.view.componentes.Cores;
+import jogodamemoria.view.componentes.PainelVidro;
 
-public class JanelaSinglePlayer extends JPanel implements ActionListener {
+public class JanelaSinglePlayer extends JanelaJogoBase {
 
-    private Tabuleiro tabuleiro;
     private Jogador jogador;
 
-    private NavegacaoController navegacaoController;
-    private JogoController gerenciador;
-    private int indexPrimeiraCarta = -1;
-
-    private JLabel lblPontos;
-    private boolean tabuleiroBloqueado = false;
-
-    private JLabel lblTempo;
-    private int segundosDecorridos = 0;
+    private JLabel lblNome, lblPontos, lblTempo;
     private Timer cronometro;
-
-    private JPanel painelTabuleiro;
-    ArrayList<JButton> botoesCartas = new ArrayList<>();
+    private int segundosDecorridos = 0;
 
     public JanelaSinglePlayer(Tabuleiro tabuleiro, Jogador jogador, NavegacaoController navegacaoController) {
-        this.tabuleiro = tabuleiro;
+        super(tabuleiro, navegacaoController);
         this.jogador = jogador;
-        this.navegacaoController = navegacaoController;
         this.gerenciador = new JogoController(tabuleiro, jogador);
 
-        setLayout(new BorderLayout(20, 20));
+        inicializarInterface();
+    }
 
-        String textoTitulo = "";
-        int colunas = 0;
-        int lines = 0;
+    private int calcularColunasIdeais() {
+        int totalCartas = tabuleiro.getTamanho();
 
-        if (tabuleiro.getTamanho() == 12) {
-            textoTitulo = "UM JOGADOR - MODO FÁCIL";
-            colunas = 4;
-            lines = 3;
+        if (totalCartas <= 12) {
+            return 4; // 12 cartas -> Grid 4x3
+        } else if (totalCartas <= 20) {
+            return 5; // 20 cartas -> Grid 5x4
         } else {
-            textoTitulo = "UM JOGADOR - MODO PADRÃO";
-            colunas = 5;
-            lines = 4;
+            return 6; // 24 cartas -> Grid 6x4
         }
+    }
 
-        // SUPERIOR
+    private void inicializarInterface() {
+        String textoTitulo = (tabuleiro.getTamanho() == 12) ? "UM JOGADOR - MODO FÁCIL" : "UM JOGADOR - MODO PADRÃO";
+        int colunas = calcularColunasIdeais();
+
+        // Topo HUD
         JLabel labelTitulo = new JLabel(textoTitulo, JLabel.CENTER);
-        labelTitulo.setFont(new Font("Arial", Font.BOLD, 24));
+        labelTitulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        labelTitulo.setForeground(Cores.TEXTO_CIANO);
 
-        JPanel superior = new JPanel(new GridLayout(1, 1));
-        superior.add(labelTitulo);
-        add(superior, BorderLayout.NORTH);
+        PainelVidro superior = new PainelVidro();
+        superior.setLayout(new BorderLayout());
+        superior.setBorder(BorderFactory.createEmptyBorder(12, 15, 12, 15));
+        superior.add(labelTitulo, BorderLayout.CENTER);
 
-        // CENTRO
-        painelTabuleiro = new JPanel(new GridLayout(lines, colunas, 15, 15));
+        JPanel containerSuperior = new JPanel(new BorderLayout());
+        containerSuperior.setOpaque(false);
+        containerSuperior.setBorder(BorderFactory.createEmptyBorder(15, 20, 0, 20));
+        containerSuperior.add(superior, BorderLayout.CENTER);
+        add(containerSuperior, BorderLayout.NORTH);
 
-        for (int i = 0; i < tabuleiro.getTamanho(); i++) {
-            JButton botao = new JButton("[ ? ]");
-            botao.setFont(new Font("Arial", Font.BOLD, 24));
-
-            botoesCartas.add(botao);
-            painelTabuleiro.add(botao);
-            botao.addActionListener(this);
-        }
-
+        // Tabuleiro ajustado com gaps proporcionais
+        montarTabuleiro(colunas, 10, 10);
         add(painelTabuleiro, BorderLayout.CENTER);
 
-        // INFERIOR
-        JLabel lblNome = new JLabel("Jogador: " + jogador.getNome(), JLabel.CENTER);
+        // Base HUD
+        lblNome = criarLabelHUD("Jogador: " + jogador.getNome(), JLabel.CENTER);
+        lblNome.setForeground(Cores.TEXTO_CIANO);
+        lblPontos = criarLabelHUD("Pares Feitos: 0", JLabel.CENTER);
+        lblTempo = criarLabelHUD("Tempo: 00:00", JLabel.CENTER);
 
-        lblPontos = new JLabel("Pares Feitos: 0", JLabel.CENTER);
-        lblTempo = new JLabel("Tempo: 00:00", JLabel.CENTER);
-
-        Font fonteHUD = new Font("Arial", Font.PLAIN, 18);
-        lblNome.setFont(fonteHUD);
-        lblPontos.setFont(fonteHUD);
-        lblTempo.setFont(fonteHUD);
-
-        JPanel inferior = new JPanel(new GridLayout(1, 3));
+        PainelVidro inferior = new PainelVidro();
+        inferior.setLayout(new GridLayout(1, 3));
+        inferior.setBorder(BorderFactory.createEmptyBorder(12, 15, 12, 15));
         inferior.add(lblNome);
         inferior.add(lblPontos);
         inferior.add(lblTempo);
 
-        add(inferior, BorderLayout.SOUTH);
+        JPanel containerInferior = new JPanel(new BorderLayout());
+        containerInferior.setOpaque(false);
+        containerInferior.setBorder(BorderFactory.createEmptyBorder(0, 20, 15, 20));
+        containerInferior.add(inferior, BorderLayout.CENTER);
+        add(containerInferior, BorderLayout.SOUTH);
 
-        cronometro = new Timer(1000, evento -> {
+        // Cronômetro do SinglePlayer
+        cronometro = new Timer(1000, e -> {
             segundosDecorridos++;
-
-            int minutos = segundosDecorridos / 60;
-            int segundos = segundosDecorridos % 60;
-            String tempoFormatado = String.format("Tempo: %02d:%02d", minutos, segundos);
-
-            lblTempo.setText(tempoFormatado);
+            int min = segundosDecorridos / 60;
+            int seg = segundosDecorridos % 60;
+            lblTempo.setText(String.format("Tempo: %02d:%02d", min, seg));
         });
-
         cronometro.start();
 
         configurarBotaoEsc();
@@ -114,108 +102,83 @@ public class JanelaSinglePlayer extends JPanel implements ActionListener {
 
     public void reiniciarJogo() {
         this.tabuleiro = new Tabuleiro(this.tabuleiro.getTamanho() / 2, false);
-
         this.jogador.resetarPontos();
-
         this.gerenciador = new JogoController(this.tabuleiro, this.jogador);
-        this.indexPrimeiraCarta = -1;
         this.tabuleiroBloqueado = false;
 
-        cronometro.stop();
+        if (cronometro != null) {
+            cronometro.stop();
+        }
         segundosDecorridos = 0;
         lblTempo.setText("Tempo: 00:00");
         lblPontos.setText("Pares Feitos: 0");
 
-        painelTabuleiro.removeAll();
-        botoesCartas.clear();
+        int colunas = calcularColunasIdeais();
+        montarTabuleiro(colunas, 10, 10);
 
-        for (int i = 0; i < tabuleiro.getTamanho(); i++) {
-            JButton botao = new JButton("[ ? ]");
-            botao.setFont(new Font("Arial", Font.BOLD, 24));
-
-            botoesCartas.add(botao);
-            painelTabuleiro.add(botao);
-            botao.addActionListener(this);
+        if (cronometro != null) {
+            cronometro.start();
         }
-        painelTabuleiro.revalidate();
-        painelTabuleiro.repaint();
-
-        cronometro.start();
-    }
-
-    private void configurarBotaoEsc() {
-        InputMap inputMap = this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        ActionMap actionMap = this.getActionMap();
-
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "acaoEsc");
-
-        actionMap.put("acaoEsc", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                navegacaoController.solicitarVoltarAoMenu(
-                        JanelaSinglePlayer.this,
-                        () -> cronometro.stop(), // Como pausar
-                        () -> cronometro.start() // Como retomar
-                );
-            }
-        });
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        if (tabuleiroBloqueado)
-            return;
+    protected void processarCliqueIndice(int i) {
+        ResultadoJogada resultado = gerenciador.processarCliqueCarta(i);
 
-        for (int i = 0; i < botoesCartas.size(); i++) {
-            if (e.getSource() == botoesCartas.get(i)) {
-
-                ResultadoJogada resultado = gerenciador.processarCliqueCarta(i);
-
-                switch (resultado) {
-                    case PRIMEIRA_CARTA_VIRADA:
-                        botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());
-                        indexPrimeiraCarta = i;
-                        break;
-
-                    case ACERTOU_PAR:
-                        AudioController.tocarEfeito("/jogodamemoria/recursos/sons/acerto.wav");
-                        botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());
-                        lblPontos.setText("Pares Feitos: " + jogador.getPontuacao());
-                        indexPrimeiraCarta = -1;
-                        break;
-
-                    case ERROU_PAR:
-                        botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());
-                        tabuleiroBloqueado = true;
-
-                        int pBotao = indexPrimeiraCarta;
-                        int sBotao = i;
-
-                        Timer timer = new Timer(1000, evento -> {
-                            botoesCartas.get(pBotao).setText("[ ? ]");
-                            botoesCartas.get(sBotao).setText("[ ? ]");
-                            tabuleiroBloqueado = false;
-                        });
-                        timer.setRepeats(false);
-                        timer.start();
-                        break;
-
-                    case VITORIA:
-
-                        botoesCartas.get(i).setText(tabuleiro.getCarta(i).getValor());
-                        lblPontos.setText("Pares Feitos: " + jogador.getPontuacao());
-                        cronometro.stop();
-                        AudioController.tocarEfeito("/jogodamemoria/recursos/sons/vitoria.wav");
-                        navegacaoController.exibirVitoria(this, gerenciador.getTentativas(), lblTempo.getText(),
-                                jogador, tabuleiro);
-                        break;
-
-                    case IGNORAR:
-                    default:
-                        break;
-                }
+        switch (resultado) {
+            case PRIMEIRA_CARTA_VIRADA:
+                botoesCartas.get(i).repaint();
                 break;
-            }
+
+            case ACERTOU_PAR:
+                AudioController.tocarEfeito("/jogodamemoria/recursos/sons/acerto.wav");
+                botoesCartas.get(i).repaint();
+                atualizarHUD();
+                break;
+
+            case ERROU_PAR:
+                botoesCartas.get(i).repaint();
+                tabuleiroBloqueado = true;
+
+                Timer timer = new Timer(1500, evento -> {
+                    gerenciador.finalizarTurnoErrado();
+                    sincronizarCartasVisuais();
+                    tabuleiroBloqueado = false;
+                });
+                timer.setRepeats(false);
+                timer.start();
+                break;
+
+            case VITORIA:
+                botoesCartas.get(i).repaint();
+                atualizarHUD();
+                if (cronometro != null) {
+                    cronometro.stop();
+                }
+                AudioController.tocarEfeito("/jogodamemoria/recursos/sons/vitoria.wav");
+                navegacaoController.exibirVitoria(this, gerenciador.getTentativas(), lblTempo.getText(), jogador,
+                        tabuleiro);
+                break;
+
+            default:
+                break;
         }
+    }
+
+    @Override
+    protected void atualizarHUD() {
+        lblPontos.setText("Pares Feitos: " + jogador.getPontuacao());
+    }
+
+    @Override
+    protected void pausarJogo() {
+        if (cronometro != null)
+            cronometro.stop();
+    }
+
+    @Override
+    protected void retomarJogo() {
+        if (cronometro != null)
+            cronometro.start();
     }
 }

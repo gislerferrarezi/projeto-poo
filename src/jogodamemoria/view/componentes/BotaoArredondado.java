@@ -39,7 +39,7 @@ public class BotaoArredondado extends JButton {
             @Override
             public void mouseExited(MouseEvent e) { setBackground(BotaoArredondado.this.corBase); }
         });
-    }
+    }    
 
     @Override
     protected void paintComponent(Graphics g) {
