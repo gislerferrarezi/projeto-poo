@@ -1,11 +1,11 @@
 package jogodamemoria.view.componentes;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 public class CaixasDeDialogo {
 
-    // --- DIÁLOGO PARA SINGLEPLAYER ---
+    // DIÁLOGO PARA SINGLEPLAYER 
     public static String pedirNomeSingle(Component parent) {
         JDialog dialog = criarDialogoBase(parent);
         PainelVidro painelFundo = criarPainelBase();
@@ -28,7 +28,7 @@ public class CaixasDeDialogo {
         return resultado[0];
     }
 
-    // --- DIÁLOGO PARA MULTIPLAYER ---
+    // DIÁLOGO PARA MULTIPLAYER
     public static String[] pedirNomesMulti(Component parent) {
         JDialog dialog = criarDialogoBase(parent);
         PainelVidro painelFundo = criarPainelBase();
@@ -61,7 +61,7 @@ public class CaixasDeDialogo {
         return resultado[0];
     }
 
-    // --- DIÁLOGO DE CONFIRMAÇÃO (Sim ou Não) ---
+    // DIÁLOGO DE CONFIRMAÇÃO (Sim ou Não)
     public static boolean confirmarAcao(Component parent, String mensagem, String titulo) {
         JDialog dialog = criarDialogoBase(parent);
         PainelVidro painelFundo = criarPainelBase();
@@ -83,10 +83,7 @@ public class CaixasDeDialogo {
         return confirmou[0];
     }
 
-    // =================================================================
     // MÉTODOS AUXILIARES REUTILIZÁVEIS
-    // =================================================================
-
     private static JDialog criarDialogoBase(Component parent) {
         Window window = SwingUtilities.getWindowAncestor(parent);
         JDialog dialog = new JDialog(window, Dialog.ModalityType.APPLICATION_MODAL);
@@ -118,8 +115,6 @@ public class CaixasDeDialogo {
         return lbl;
     }
 
-    // Cria o painel de botões e inverte a ordem: Esquerda (Confirmar/Sim) e Direita
-    // (Cancelar/Não)
     private static JPanel criarPainelBotoes(JDialog dialog, String textoEsq, String textoDir, Runnable acaoEsq) {
         BotaoArredondado btnEsq = new BotaoArredondado(textoEsq, new Dimension(130, 40));
         BotaoArredondado btnDir = new BotaoArredondado(textoDir, new Dimension(130, 40));

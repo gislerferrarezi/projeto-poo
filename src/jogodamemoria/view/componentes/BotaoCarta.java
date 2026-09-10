@@ -1,11 +1,11 @@
 package jogodamemoria.view.componentes;
 
-import jogodamemoria.model.Carta;
-import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.*;
+import jogodamemoria.model.Carta;
 
 public class BotaoCarta extends JButton {
 
@@ -91,25 +91,29 @@ public class BotaoCarta extends JButton {
     }
 
     private String definirNomeDoArquivo(Carta carta) {
-        // 1. Mapeamento de Cartas Especiais (Multiplayer)
-        if (carta.getTipo() == Carta.Tipo_Carta.PERDEU_A_VEZ) {
-            return "cardJoker.png";
-        } else if (carta.getTipo() == Carta.Tipo_Carta.JOGUE_DE_NOVO) {
-            return "cardHeartsK.png";
-        } else if (carta.getTipo() == Carta.Tipo_Carta.DOBRO_PONTOS) {
-            return "cardDiamondsA.png";
+    // 1. Mapeamento de Cartas Especiais usando switch
+        switch (carta.getTipo()) {
+            case PERDEU_A_VEZ:
+                return "cardJoker.png";
+            case JOGUE_DE_NOVO:
+                return "cardHeartsK.png";
+            case DOBRO_PONTOS:
+                return "cardDiamondsA.png";
+            default:
+                break;
         }
 
-        // 2. Mapeamento de Cartas Normais (Espadas)
-        String[] valoresSpades = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
+        // 2. Mapeamento de Cartas Normais: A, 2..10, J, Q, K (IDs 0 a 12)
+        String[] valoresSpades = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
         int id = carta.getId();
 
         if (id >= 0 && id < valoresSpades.length) {
             return "cardSpades" + valoresSpades[id] + ".png";
         }
 
-        // Caso o ID seja maior do que os 12 pares padrão
-        return "cardSpadesA.png";
+        // Exibe aviso no console para depuração, mas previne crash no Swing
+        System.err.println("ID de carta normal inválido/não mapeado: " + id);
+        return "cardSpadesA.png"; // Fallback seguro
     }
 
     private Image carregarImagem(String caminho) {

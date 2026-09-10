@@ -67,7 +67,7 @@ public class JogoController {
         return cartasNormais / 2;
     }
 
-    // --- LÓGICA PRINCIPAL DO CLIQUE DA CARTA ---
+    // LÓGICA PRINCIPAL DO CLIQUE DA CARTA 
     public ResultadoJogada processarCliqueCarta(int indice) {
         Carta cartaClicada = tabuleiro.getCarta(indice);
 
@@ -164,8 +164,7 @@ public class JogoController {
         return ResultadoJogada.IGNORAR;
     }
 
-    // --- FINALIZA O TURNO COM ERRO (Chamado pelo Timer da Janela de ambos os
-    // modos) ---
+    // FINALIZA O TURNO COM ERRO
     public void finalizarTurnoErrado() {
         if (primeiraCarta != null) {
             primeiraCarta.esconder();
@@ -177,7 +176,7 @@ public class JogoController {
         }
     }
 
-    // --- MÉTODOS INTERNOS DO CRONÔMETRO (SWING TIMER) ---
+    // MÉTODOS INTERNOS DO CRONÔMETRO (SWING TIMER) 
     private void inicializarCronometro() {
         cronometro = new Timer(1000, e -> {
             if (jogadorAtual == 0) {
@@ -250,7 +249,7 @@ public class JogoController {
         this.onTimeoutCallback = onTimeout;
     }
 
-    // --- GETTERS, SETTERS E COMPARADORES ---
+    // GETTERS, SETTERS E COMPARADORES 
     public int getTentativas() {
         return tentativas;
     }

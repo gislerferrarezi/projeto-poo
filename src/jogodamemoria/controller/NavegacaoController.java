@@ -5,18 +5,17 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-
 import jogodamemoria.model.Jogador;
 import jogodamemoria.model.Tabuleiro;
 import jogodamemoria.view.JanelaCreditos;
 import jogodamemoria.view.JanelaMenuMultiplayer;
 import jogodamemoria.view.JanelaMenuPrincipal;
 import jogodamemoria.view.JanelaMenuSinglePlayer;
+import jogodamemoria.view.JanelaMultiplayer;
 import jogodamemoria.view.JanelaSinglePlayer;
+import jogodamemoria.view.JanelaVitoriaMultiplayer;
 import jogodamemoria.view.JanelaVitoriaSingle;
 import jogodamemoria.view.componentes.CaixasDeDialogo;
-import jogodamemoria.view.JanelaMultiplayer;
-import jogodamemoria.view.JanelaVitoriaMultiplayer;
 
 public class NavegacaoController implements ActionListener {
 
@@ -152,7 +151,7 @@ public class NavegacaoController implements ActionListener {
             trocarTela("MENU_PRINCIPAL");
         } else if (fonte == janelaMenuMultiplayer.getBtnMultiplayerLocal()) {
             AudioController.tocarEfeito("/jogodamemoria/recursos/sons/navegacao.wav");
-            iniciarPartidaMultiplayer(13); // Alterado de 12 para 13
+            iniciarPartidaMultiplayer(13); 
         }
 
         else if (fonte == janelaCreditos.getBtnVoltar()) {

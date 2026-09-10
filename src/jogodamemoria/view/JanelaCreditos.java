@@ -1,7 +1,7 @@
 package jogodamemoria.view;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 import jogodamemoria.view.componentes.*;
 
 public class JanelaCreditos extends PainelComFundo {
@@ -12,12 +12,12 @@ public class JanelaCreditos extends PainelComFundo {
         super("/jogodamemoria/recursos/imagens/fundo.png");
         setLayout(new OverlayLayout(this));
 
-        // CAMADA SUPERIOR: BOTÃO VOLTAR (Alinhado exatamente igual ao JanelaMenuBase)
+        // CAMADA SUPERIOR: BOTÃO VOLTAR 
         JPanel painelTop = new JPanel(new BorderLayout());
         painelTop.setOpaque(false);
-        painelTop.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50)); // Mesmo padding da base
+        painelTop.setBorder(BorderFactory.createEmptyBorder(30, 50, 30, 50)); 
 
-        JPanel painelRodape = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 0)); // Mesmas margens do rodapé base
+        JPanel painelRodape = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 0)); 
         painelRodape.setOpaque(false);
 
         btnVoltar = new BotaoArredondado("Voltar", new Dimension(150, 48));

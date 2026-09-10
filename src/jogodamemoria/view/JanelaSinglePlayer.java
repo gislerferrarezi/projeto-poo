@@ -7,7 +7,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-
 import jogodamemoria.controller.AudioController;
 import jogodamemoria.controller.JogoController;
 import jogodamemoria.controller.JogoController.ResultadoJogada;
@@ -34,15 +33,9 @@ public class JanelaSinglePlayer extends JanelaJogoBase {
     }
 
     private int calcularColunasIdeais() {
-        int totalCartas = tabuleiro.getTamanho();
-
-        if (totalCartas <= 12) {
-            return 4; // 12 cartas -> Grid 4x3
-        } else if (totalCartas <= 20) {
-            return 5; // 20 cartas -> Grid 5x4
-        } else {
-            return 6; // 24 cartas -> Grid 6x4
-        }
+        if (tabuleiro == null) return 4;
+        // Se for 24 cartas usa 6 colunas (6x4), se for 12 usa 4 colunas (4x3)
+        return (tabuleiro.getTamanho() > 12) ? 6 : 4;
     }
 
     private void inicializarInterface() {
